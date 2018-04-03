@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jQuery Calendar.js: Resource Example</title>
+
+
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+<script type="text/javascript" src="../jquery.calendar.js"></script>
+<link rel="stylesheet" media="screen" href="../jquery.calendar.css"/>
+
+<script type="text/javascript">
+$(function(){
+	
+	$('#calendar').cal({
+		
+		resources : {
+			'MAK D2233' : 'MAK D2233',
+			'MAK D1117' : 'MAK D1117',
+			'MAK B2235' : 'MAK B2235',
+			'MAK B1124' : 'MAK B1124',
+			'MAK B1118' : 'MAK B1118',
+			'MAK B1116' : 'MAK B1116',
+			'MAK A1105' : 'MAK A1105',
+			'HRY 115' : 'HRY 115',
+			'HRY 113' : 'HRY 113',
+			'EC 612' : 'EC 612',
+			'EC 614' : 'EC 614',
+			'KEN 358' : 'KEN 358',
+			'KEN 244'  : 'KEN 244',
+			
+		},
+		
+		allowresize		: true,
+		allowmove		: true,
+		allowselect		: true,
+		allowremove		: true,
+		//allownotesedit	: true,
+		daystodisplay : 5,    
+
+		
+		eventselect : function( uid ){
+			console.log( 'Selected event: '+uid);
+		},
+		
+		eventremove : function( uid ){
+			console.log( 'Removed event: '+uid );
+		},
+		
+		
+		eventnotesedit : function( uid ){
+			console.log( 'Edited Notes for event: '+uid );
+		},
+		
+		// Load events as .ics
+		
+		
+	});
+	
+		document.querySelectorAll("div.ui-cal-label-date p").forEach((el)=>{
+			console.log($(el).html().substring(0,3));
+			$(el).html("<h4>"+$(el).html().substring(0,3)+"</h4>");
+		});
+
+	
+	
+	
+});
+	
+
+
+</script>
+
+<style type="text/css">
+html,body{
+font-family: 'Roboto';
+font-size: 10px;
+}
+#calendar{
+position: absolute;
+top: 50px;
+left: 50px;
+right: 50px;
+bottom: 50px;
+border: 1px solid #bbb;
+}
+</style>
+
+</head>
+
+<body>
+<h1 style="margin:150px auto 30px auto; text-align:center;">jQuery Calendar.js: Resource Example</h1>
+<div id="calendar"></div>
+
+</body>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</html>

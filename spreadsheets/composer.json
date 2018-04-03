@@ -1,0 +1,8 @@
+{
+    "require": {
+        "cache/simple-cache-bridge": "^1.0",
+        "cache/memcache-adapter": "^1.0",
+        "phpoffice/phpexcel": "^1.8",
+        "phpoffice/phpspreadsheet": "^1.2"
+    }
+}

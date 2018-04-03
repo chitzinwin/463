@@ -1,0 +1,1 @@
+INDEX VERSION 1.4+/opt/lampp/htdocs/schedule_visualization/schedulejs/.metadata/.plugins/org.eclipse.wst.jsdt.core/indexes
