@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {         //To catch the POST Request
 			// echo 'Got here'; exit;
 			break;
 			case 'UPDATE':
-			Update($clientRequest['LineNumber'],$clientRequest['Section'],$clientRequest['PrimaryInstructor'],$clientRequest['Location'],$clientRequest['BeginTime'],$clientRequest['EndTime'], $clientRequest['Days'] );
+			Update($clientRequest['LineNumber'],$clientRequest['CourseNum'], $clientRequest['Section'],$clientRequest['PrimaryInstructor'],$clientRequest['Location'],$clientRequest['BeginTime'],$clientRequest['EndTime'], $clientRequest['Days'] );
 			break;
 			case 'DELETE':
 			Delete($clientRequest['LineNum']);
