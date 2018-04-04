@@ -240,8 +240,8 @@ function updateFile($worksheet){
 <link rel="stylesheet" media="screen" href="schedulejs/jquery-ui.css"/>
 
 <script>
+		$('#contentcontainer').hide();
 	// This prevents Flash of Unstyled Content by hiding all HTML before everyting can load.  Show is called in function() below.
-	$('html').hide();
 </script>
 
 
@@ -251,6 +251,7 @@ var jsonin = <?php if(isset($jsonREST)){ echo $jsonREST; } else { echo '{}';}  ?
 
 
 	$(function(){
+
 		console.log($.isEmptyObject(jsonin));
 		 if(!$.isEmptyObject(jsonin)){
 
@@ -634,6 +635,7 @@ $('.timepicker').timepicker({
 
 			// Delete button click to allow deletion of courses.  
 			$(".button-remove").on('click', function(e){
+				
 				$("#deleteLine").val($(this).parent().attr("data-id").trim().substring(0, 3).match(/\d+/))
 				$('#deleteDialog').dialog('open');
 			});
@@ -768,7 +770,9 @@ $('.timepicker').timepicker({
 				addRooms.add(option1);
 				editRooms.add(option2);
 			}
-
+	// This prevents FOUC 
+	 $('#contentcontainer').css("visibility", "visible");
+	
 		}  //if  statement for json obj validation
 	
 			/*****************************************************************************************************
@@ -866,7 +870,8 @@ $('.timepicker').timepicker({
 
 
 
-
+// This prevents FOUC 
+//$('html').show();
 //-----------------------------------------------------------------------------------------------------------------------------------------		
 //-----------------------------------------------------------------------------------------------------------------------------------------		
 //-----------------------------------------------------------------------------------------------------------------------------------------		
@@ -879,9 +884,9 @@ $('.timepicker').timepicker({
 
 
 
+	
 
-			// This prevents FOUC 
-			$('html').show();
+		
 
 function refresh(){
 	location.replace("resourcemergeddays.php");
@@ -930,10 +935,14 @@ opacity: 1;
 <body>
 
 <div id="buttonSection"></div>
+
 <h1 style="margin:0px auto 0 auto; text-align:center;">CIS Department Scheduler</h1>
+<div id="contentcontainer" style="visibility: hidden">
 <div style="margin:10px auto 100px auto; text-align:center;">
 <button onclick="$('#addCourse').dialog('open');">Add Course</button>
 <button onclick="refresh()">Refresh</button>
+
+
 </div>
 
 
@@ -1065,7 +1074,7 @@ opacity: 1;
 <!-- ****************************************************************************************************** -->
 
 
-
+</div>
 
 </body>
 
