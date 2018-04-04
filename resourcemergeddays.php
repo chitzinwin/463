@@ -573,7 +573,7 @@ $('.timepicker').timepicker({
 			// Event handlers for Calendar
 			// Title click to allow editing of the calendar events
 			$("p.title").on('click', function(){
-				// $(this).parent().css( 'z-index', '-1');
+				$(this).parent().css( 'z-index', '-1');
 
 				var parent = $(this).parent();
 				var details = parent.children( ".details" );
@@ -644,7 +644,7 @@ $('.timepicker').timepicker({
         			autoOpen: false,
 					modal: true,
 					width: 400,
-					zIndex: 19999,
+					zIndex: 9999,
 			});
 
 
@@ -652,7 +652,7 @@ $('.timepicker').timepicker({
         			autoOpen: false,
 					modal: true,
 					width: 400,
-					zIndex: 19999,
+					zIndex: 9999,
         	
 			});
 		

@@ -1800,7 +1800,7 @@
 								backgroundColor : selected ? values.colors.mainSelected : values.colors.mainBackground,
 								textShadow		: values.colors.mainTextShadow+' 1px 1px 1px',
 								color			: values.colors.mainText,
-								'z-index'		: selected ? '9999' : values.overlap.zindex
+								'z-index'		: selected ? '99' : values.overlap.zindex
 							}
 
 							newStylesMain.width -= data.settings.overlapoffset*values.overlap.count;
@@ -1810,7 +1810,7 @@
 								backgroundColor	: values.colors.detailsBackground,
 								textShadow		: values.colors.detailsTextShadow+' 1px 1px 1px',
 								color			: values.colors.detailsText,
-								'z-index'		: selected ? '9999' : values.overlap.zindex
+								'z-index'		: selected ? '99' : values.overlap.zindex
 							}
 
 							// If the event display is too small to show any meaningful details area
