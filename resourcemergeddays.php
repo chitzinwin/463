@@ -714,8 +714,8 @@ $('.timepicker').timepicker({
 						Section: $('#editsNum').val(),
 						PrimaryInstructor: $('#editprof').val(),
 						Location: room,
-						BeginTime: $('#beginTime').val(),
-						EndTime: $('#endTime').val(),
+						BeginTime: $('#editbeginTime').val(),
+						EndTime: $('#editendTime').val(),
 						Days: $("#editdays").val()
 						}, 
 						success: function(data){
