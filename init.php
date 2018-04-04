@@ -1,14 +1,13 @@
 <?
 ini_set('session.gc_maxlifetime', 3600);
 session_set_cookie_params(3600);
-ini_set('memory_limit', '512M');
 session_start();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // $entityBody = file_get_contents('php://input');
     // echo $entityBody;
     if(isset($_POST["filename"]) && isset($_POST["value"]) ){
-         $_SESSION["xlsxFile"] = $_POST["value"];
-         echo  file_exists($_SESSION["xlsxFile"]);    //final confirmation the file exsitence
+         $_SESSION["xlsx"] = $_POST["value"];
+         echo  file_exists($_SESSION["xlsx"]);    //final confirmation the file exsitence
         exit;
     }
     
@@ -82,10 +81,12 @@ console.log(files);
 
 $( function() {
     var dialog =  $( "#dialog" ).dialog({
-        autoOpen: true,
+        autoOpen: false,
         buttons : buttons
     });
-   
+    window.onload = ()=>{
+        dialog.dialog('open');
+    }
     
     
 
@@ -133,7 +134,7 @@ $( function() {
 </style>
 </head>
 <body>
-<div id="dialog" title="File(.xlsx) found in directory"></div>
+<div id="dialog" title="File(Xlsx) found in directory"></div>
 </body>
 
 </html>
