@@ -953,19 +953,19 @@ opacity: 1;
 	  		<div style="margin-left: auto; margin-right:auto; width: 66%;">
 	  		<div style="float: right;">
 			<label for="beginTime">Begin Time:</label>
-			<input align="right" class="timepicker" type="text" id="beginTime">
+			<input align="right" class="timepicker" type="text" id="beginTime" pattern="\d?\d:\d\d\s(AM|PM)">
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
 			<label for="endTime">End Time:</label>
-			<input class="timepicker" type="text" id="endTime">
+			<input class="timepicker" type="text" id="endTime" pattern="\d?\d:\d\d\s(AM|PM)">
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
 			<label for="day">Days:</label>
-			<input type="text" id="days">
+			<input type="text" id="days" pattern="((M)|(T)|(W)|(R)|(F))+">
 			</div>
 			</br>
 			</br>
@@ -1014,19 +1014,19 @@ opacity: 1;
 	  <div style="float: right;">
 
 			<label for="editbeginTime">Begin Time</label>
-			<input class="timepicker" type="text" id="editbeginTime">
+			<input class="timepicker" type="text" id="editbeginTime" pattern="\d?\d:\d\d\s(AM|PM)">
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
 			<label for="editendTime">End Time:</label>
-			<input class="timepicker" type="text" id="editendTime">
+			<input class="timepicker" type="text" id="editendTime" pattern="\d?\d:\d\d\s(AM|PM)">
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
 			<label for="editdays">Days:</label>
-			<input type="text" id="editdays">
+			<input type="text" id="editdays" pattern="((M)|(T)|(W)|(R)|(F))+">
 			</div>
 			</br>
 			</br>
