@@ -410,8 +410,8 @@ var jsonin = <?php if(isset($jsonREST)){ echo $jsonREST; } else { echo '{}';}  ?
 		eventcreate : function( ){
 			console.log('creation event hit');
 		},
-		eventremove : function( event ){
-			event.stopPropagation();
+		eventremove : function(){
+			$(this).stopPropagation();
 		},
 
 		eventmove : function( uid ){
