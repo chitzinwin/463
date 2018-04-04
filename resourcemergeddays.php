@@ -1010,7 +1010,9 @@ opacity: 1;
 
 <div id="deleteDialog" title="Confirm Delete">
 <input type="hidden" id="deleteLine">
-<p>Are you sure you want to delete this course?</p>
+<h2>This action will delete all instances of this course!</h2>
+<p>Are you sure you want to perform this action?</p>
+<p>To delete a single day, edit the course days.</p>
 </div>
 
 
