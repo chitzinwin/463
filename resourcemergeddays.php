@@ -635,7 +635,7 @@ $('.timepicker').timepicker({
 
 			// Delete button click to allow deletion of courses.  
 			$(".button-remove").on('click', function(e){
-				
+
 				$("#deleteLine").val($(this).parent().attr("data-id").trim().substring(0, 3).match(/\d+/))
 				$('#deleteDialog').dialog('open');
 			});
@@ -715,11 +715,11 @@ $('.timepicker').timepicker({
 						Location: room,
 						BeginTime: $('#beginTime').val(),
 						EndTime: $('#endTime').val(),
-						Days: $("#editdays")
+						Days: $("#editdays").val()
 						}, 
 						success: function(data){
-						$(this).dialog("close");
-						refresh();
+							console.log("hi");
+							refresh();
 					},
 			});
             },
