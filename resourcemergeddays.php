@@ -173,7 +173,7 @@ function Update($row, $courseNum, $section, $instructor, $location, $begintime, 
 
 	$worksheet->getCell('B'.$row)->setValue($courseNum);
 	$worksheet->getCell('C'.$row)->setValue($section);
-	$worksheet->getCell('U'.$row)->setValue($instrctor);
+	$worksheet->getCell('U'.$row)->setValue($instructor);
 	$worksheet->getCell('R'.$row)->setValue($location);
 	$worksheet->getCell('O'.$row)->setValue($days);
 	$worksheet->getCell('P'.$row)->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($begintime)+7200)); 
