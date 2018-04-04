@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {         //To catch the POST Request
 
 		switch($clientRequest["Action"] ) { 
 			case "ADD": 
-			Add('CIS',$clientRequest['CourseNum'],$clientRequest['Section'],$clientRequest['PrimaryInstructor'],$clientRequest['Location'], $clientRequest['Days'] ,$clientRequest['BeginTime'],$clientRequest['EndTime']); 
+			Add($clientRequest['CourseNum'],$clientRequest['Section'],$clientRequest['PrimaryInstructor'],$clientRequest['Location'], $clientRequest['Days'] ,$clientRequest['BeginTime'],$clientRequest['EndTime']); 
 			// echo 'Got here'; exit;
 			break;
 			case 'UPDATE':
@@ -131,7 +131,7 @@ $spreadsheet = $reader->load($_SESSION['fileSource']);
 
 }
 
-function Add($subj, $courseNum, $section, $instrctor, $location, $days, $begintime, $endtime){   //$subj, $courseNum, $section, $instrctor, $location, $begintime, $endtime
+function Add($courseNum, $section, $instrctor, $location, $days, $begintime, $endtime){   //$subj, $courseNum, $section, $instrctor, $location, $begintime, $endtime
 	// global $worksheet, $spreadsheet;
 	// global $last_row;
 	// require_once '/vendor/phpoffice/phpspreadsheet/src/Boostrap.php';
@@ -145,8 +145,8 @@ function Add($subj, $courseNum, $section, $instrctor, $location, $days, $beginti
 //    $begin_excelstandard = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($begintime)+3600);
 //    $end_excelstandard = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($endtime)+3600);
 
-	$worksheet->getCell('A'.$last_row)->setValue($subj);
-	 $worksheet->getCell('B'.$last_row)->setValue($courseNum);
+	$worksheet->getCell('A'.$last_row)->etValue(substr($courseNum,0,3));
+	 $worksheet->getCell('B'.$last_row)->setValue($substr($courseNum,3));
 	 $worksheet->getCell('C'.$last_row)->setValue($section);
 	 $worksheet->getCell('U'.$last_row)->setValue($instrctor);
 	 $worksheet->getCell('R'.$last_row)->setValue($location);
@@ -171,7 +171,8 @@ function Delete($row_no){  //linenumber
 function Update($row, $courseNum, $section, $instructor, $location, $begintime, $endtime, $days){ //linenumber, $subj, $courseNum, $section, $instrctor, $location, $begintime, $endtime
 	$worksheet = unserialize($_SESSION['worksheet']);
 
-	$worksheet->getCell('B'.$row)->setValue($courseNum);
+	$worksheet->getCell('A'.$row)->setValue(substr($courseNum,0,3));
+	$worksheet->getCell('B'.$row)->setValue($substr($courseNum,3));
 	$worksheet->getCell('C'.$row)->setValue($section);
 	$worksheet->getCell('U'.$row)->setValue($instructor);
 	$worksheet->getCell('R'.$row)->setValue($location);
