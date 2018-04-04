@@ -320,6 +320,7 @@ z-index: 1;
 }
 
 .ui-cal .ui-cal-event span.button-remove{
+
 position: absolute;
 top: 3px; right: 3px;
 width: 10px;
@@ -328,11 +329,13 @@ background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAA
 cursor: pointer;
 opacity: 0.6;
 -webkit-transition: opacity 0.3s linear;
+
 }
 
 .ui-cal .ui-cal-event span.button-remove:hover,
 .ui-cal .ui-cal-event.selected span.button-remove{
 opacity: 1;
+
 }
 
 .ui-cal .ui-cal-event p.title{

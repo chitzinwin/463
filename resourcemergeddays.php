@@ -44,7 +44,8 @@ $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
  
 
 	if(isset($_SESSION['xlsxFile']))
-	{
+	{  if(!isset($_SESSION['fileSource'])){$_SESSION['fileSource'] = '';}
+
 	if($_SESSION['fileSource'] !== $_SESSION['xlsxFile']){
 		$_SESSION['fileSource'] = $_SESSION['xlsxFile'];
 			unset($_SESSION['worksheetName']);
@@ -394,7 +395,7 @@ var jsonin = <?php if(isset($jsonREST)){ echo $jsonREST; } else { echo '{}';}  ?
 		allowresize		: false,
 		allowmove		: false,
 		allowselect		: true,
-		allowremove		: true,
+		allowremove		: false,
 		allownotesedit	: false,
 		allowhtml   : true, 
 
@@ -410,10 +411,7 @@ var jsonin = <?php if(isset($jsonREST)){ echo $jsonREST; } else { echo '{}';}  ?
 		eventcreate : function( ){
 			console.log('creation event hit');
 		},
-		eventremove : function(){
-			$(this).stopPropagation();
-		},
-
+		
 		eventmove : function( uid ){
 			console.log( 'Moved event: '+uid, arguments );
 		},
@@ -543,6 +541,15 @@ var jsonin = <?php if(isset($jsonREST)){ echo $jsonREST; } else { echo '{}';}  ?
 		
 			// $(el).html($(el).html().substring(0,3));
 		});
+
+				document.querySelectorAll("span.button-remove").forEach((btn)=>{  
+				
+				$(btn).before().after('<div class="button-remove"></div>');
+				$(btn ).remove();
+				
+
+				});
+						
 
 //-----------------------------------------------------------------------------------------------------------------------------------------		
 //-----------------------------------------------------------------------------------------------------------------------------------------			
@@ -743,7 +750,6 @@ $('.timepicker').timepicker({
             },
             	"No" : function() {
                 $(this).dialog("close");
-				refresh();
             	}
         	});
 
@@ -866,9 +872,13 @@ $('.timepicker').timepicker({
 //-----------------------------------------------------------------------------------------------------------------------------------------		
 //-----------------------------------------------------------------------------------------------------------------------------------------		
 //-----------------------------------------------------------------------------------------------------------------------------------------		
-//-----------------------------------------------------------------------------------------------------------------------------------------		
+//-------------------------------------------//The end of jQuery Document Ready scope ----------------------------------------------------------------------------------------------		
 // ----------------------------------------------------------------------------------------------------------------------------------------	
-});   //jQuery Document Ready scope is over here
+}); 		  
+
+
+
+
 
 			// This prevents FOUC 
 			$('html').show();
@@ -893,6 +903,24 @@ right: 15px;
 bottom: 20px;
 border: 1px solid #bbb;
 }
+
+.ui-cal .ui-cal-event .button-remove{
+position: absolute;
+top: 3px; right: 3px;
+width: 10px;
+height: 10px;
+background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAKCAYAAABmBXS+AAAC7mlDQ1BJQ0MgUHJvZmlsZQAAeAGFVM9rE0EU/jZuqdAiCFprDrJ4kCJJWatoRdQ2/RFiawzbH7ZFkGQzSdZuNuvuJrWliOTi0SreRe2hB/+AHnrwZC9KhVpFKN6rKGKhFy3xzW5MtqXqwM5+8943731vdt8ADXLSNPWABOQNx1KiEWlsfEJq/IgAjqIJQTQlVdvsTiQGQYNz+Xvn2HoPgVtWw3v7d7J3rZrStpoHhP1A4Eea2Sqw7xdxClkSAog836Epx3QI3+PY8uyPOU55eMG1Dys9xFkifEA1Lc5/TbhTzSXTQINIOJT1cVI+nNeLlNcdB2luZsbIEL1PkKa7zO6rYqGcTvYOkL2d9H5Os94+wiHCCxmtP0a4jZ71jNU/4mHhpObEhj0cGDX0+GAVtxqp+DXCFF8QTSeiVHHZLg3xmK79VvJKgnCQOMpkYYBzWkhP10xu+LqHBX0m1xOv4ndWUeF5jxNn3tTd70XaAq8wDh0MGgyaDUhQEEUEYZiwUECGPBoxNLJyPyOrBhuTezJ1JGq7dGJEsUF7Ntw9t1Gk3Tz+KCJxlEO1CJL8Qf4qr8lP5Xn5y1yw2Fb3lK2bmrry4DvF5Zm5Gh7X08jjc01efJXUdpNXR5aseXq8muwaP+xXlzHmgjWPxHOw+/EtX5XMlymMFMXjVfPqS4R1WjE3359sfzs94i7PLrXWc62JizdWm5dn/WpI++6qvJPmVflPXvXx/GfNxGPiKTEmdornIYmXxS7xkthLqwviYG3HCJ2VhinSbZH6JNVgYJq89S9dP1t4vUZ/DPVRlBnM0lSJ93/CKmQ0nbkOb/qP28f8F+T3iuefKAIvbODImbptU3HvEKFlpW5zrgIXv9F98LZua6N+OPwEWDyrFq1SNZ8gvAEcdod6HugpmNOWls05Uocsn5O66cpiUsxQ20NSUtcl12VLFrOZVWLpdtiZ0x1uHKE5QvfEp0plk/qv8RGw/bBS+fmsUtl+ThrWgZf6b8C8/UXAeIuJAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAvElEQVQYGU2QLQvCUBiF793CitH/IGhRMK34V0wu+Iu0idUoCAaLzWAYjAVtwyIDh01Qr8+Zd7ADz85533v2wYxBzrkIZnCEq3fNkc5VCGEBjb5NwJcQqpT45QPPfb7gpc+JSqkfNngMa5jACqRUpXcd/5e5/4Rpa/cKWFY6QBnoNT28gDNIlUrbOhpzx0dwghg0Szu9rg9F6/HteGMY1FXCEPbwAUl+gLEKlhBYa/VvOsy6qwsl5OyfOv8B52rwq5FQN5gAAAAASUVORK5CYII=) no-repeat 50% 50%;
+cursor: pointer;
+opacity: 0.6;
+
+}
+
+.ui-cal .ui-cal-event .button-remove:hover,
+.ui-cal .ui-cal-event.selected .button-remove{
+opacity: 1;
+
+}
+
 
 
 </style>
