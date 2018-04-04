@@ -1010,7 +1010,7 @@ opacity: 1;
 
 <div id="deleteDialog" title="Confirm Delete">
 <input type="hidden" id="deleteLine">
-<p>Are you sure you wish to delete this course?</p>
+<p>Are you sure you want to delete this course?</p>
 </div>
 
 
