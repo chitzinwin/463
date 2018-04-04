@@ -14,19 +14,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {         //To catch the POST Request
 	 if(isset($_POST["Action"])){
 		$clientRequest = $_POST;
 
-		switch($_POST["Action"] ) { 
+		switch($clientRequest["Action"] ) { 
 			case "ADD": 
 			Add('CIS',$clientRequest['CourseNum'],$clientRequest['Section'],$clientRequest['PrimaryInstructor'],$clientRequest['Location'], $clientRequest['Days'] ,$clientRequest['BeginTime'],$clientRequest['EndTime']); 
 			// echo 'Got here'; exit;
 			break;
 			case 'UPDATE':
-			
+			Update($clientRequest['LineNumber'],$clientRequest['Section'],$clientRequest['PrimaryInstructor'],$clientRequest['Location'],$clientRequest['BeginTime'],$clientRequest['EndTime'], $clientRequest['Days'] );
 			break;
 			case 'DELETE':
-
+			Delete($clientRequest['LineNum']);
 			break;
 			case 'SETSHEET':
-
+					$_SESSION['worksheetName'] = $clientRequest['RequestedSheet'];
 
 			break;
 
@@ -43,21 +43,25 @@ $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
 
  
 
-	if(isset($_SESSION['xlsx']))
+	if(isset($_SESSION['xlsxFile']))
 	{
+	if($_SESSION['fileSource'] !== $_SESSION['xlsxFile']){
+		$_SESSION['fileSource'] = $_SESSION['xlsxFile'];
+			unset($_SESSION['worksheetName']);
+		}
 		// $worksheets = $reader->listWorksheetNames($_SESSION['xlsx']);
-		$_SESSION['worksheets'] = json_encode($reader->listWorksheetNames($_SESSION['xlsx']));
+		$_SESSION['worksheets'] = json_encode($reader->listWorksheetNames($_SESSION['fileSource']));
+
+	}
+	else{
+		header("Location: init.php");
 
 	}
 
 
-unset($_SESSION['worksheet']);
-
-$fileName = 'F18.xlsx';
 // $reader->setReadDataOnly(true);
 
 // $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('F18.xlsx');
- $spreadsheet = $reader->load($fileName);
 //  $_SESSION['spreadsheet'] = $reader->load($fileName);
 
 
@@ -66,59 +70,65 @@ $fileName = 'F18.xlsx';
 //  echo json_encode($spreadsheet->getSheetNames());    //Worksheets in the xlsx files
 // print_r($reader->listWorksheetNames($fileName));
 
+if(isset($_SESSION['worksheetName'])){
 
-$worksheet = $spreadsheet->getSheetByName('Fall');
+	unset($_SESSION['worksheet']);     //reset the current working worksheet
+
+$spreadsheet = $reader->load($_SESSION['fileSource']);
+
+ $worksheet = $spreadsheet->getSheetByName($_SESSION['worksheetName']);   //$_SESSION['worksheetName']
 
 
-//  $_SESSION['worksheet']= serialize((unserialize($_SESSION['spreadsheet']))->getSheetByName('Fall'));
-//   $worksheet = unserialize($_SESSION['worksheet']);
-// $worksheet -> removeRow(83);
-				$rows = [];
-				$skipfirstline = true;
-				foreach ($worksheet->getRowIterator() AS $row) {
-					if($skipfirstline){$skipfirstline=false; continue;}  
-					
-							$cellIterator = $row->getCellIterator();
-									try {
-										$cellIterator->setIterateOnlyExistingCells(true);
-									} catch (Exception $e) {
-										continue;
-									}
-							// $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
-							$cells = [];
-							foreach ($cellIterator as $cell) {
-								$cells[] = $cell->getValue();
 
-								if($cell->getCoordinate()[0] == 'S' or $cell->getCoordinate()[0] == 'T' ){
-									$worksheet->getStyle($cell->getCoordinate())->getNumberFormat()->setFormatCode('m/dd/yyyy');    //Convert back to Excel standard of date
-								}
-
+		//  $_SESSION['worksheet']= serialize((unserialize($_SESSION['spreadsheet']))->getSheetByName('Fall'));
+		//   $worksheet = unserialize($_SESSION['worksheet']);
+		// $worksheet -> removeRow(83);
+						$rows = [];
+						$skipfirstline = true;
+						foreach ($worksheet->getRowIterator() AS $row) {
+							if($skipfirstline){$skipfirstline=false; continue;}  
 							
-							}
-							if(!$cells[0]){
-								$_SESSION['last_row']=$row->getRowIndex();
-								break;}
+									$cellIterator = $row->getCellIterator();
+											try {
+												$cellIterator->setIterateOnlyExistingCells(true);
+											} catch (Exception $e) {
+												continue;
+											}
+									// $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+									$cells = [];
+									foreach ($cellIterator as $cell) {
+										$cells[] = $cell->getValue();
 
-					$cells[15]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[15]))->format("H:i:s");
-					$cells[16]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[16]))->format("H:i:s");
-					$cells[18]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[18]))->format("n/j/Y");
-					$cells[19]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[19]))->format("n/j/Y");
-					
-					
+										if($cell->getCoordinate()[0] == 'S' or $cell->getCoordinate()[0] == 'T' ){
+											$worksheet->getStyle($cell->getCoordinate())->getNumberFormat()->setFormatCode('m/dd/yyyy');    //Convert back to Excel standard of date
+										}
 
-					$rows[$row->getRowIndex()] = $cells;
-					
-				}
-			$jsonREST = json_encode($rows);
+									
+									}
+									if(!$cells[0]){
+										$_SESSION['last_row']=$row->getRowIndex();
+										break;}
 
-			if(!isset($_SESSION["worksheet"])){
-			$_SESSION['worksheet']= serialize($worksheet);
-			$spreadsheet->disconnectWorksheets();            //Disconnect the worksheets adapter
-			unset($spreadsheet);                             //Destroy from the memory
-			}
+							$cells[15]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[15]))->format("H:i:s");
+							$cells[16]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[16]))->format("H:i:s");
+							$cells[18]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[18]))->format("n/j/Y");
+							$cells[19]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[19]))->format("n/j/Y");
+							
+							
+
+							$rows[$row->getRowIndex()] = $cells;
+							
+						}
+					$jsonREST = json_encode($rows);
+
+					if(!isset($_SESSION["worksheet"])){
+					$_SESSION['worksheet']= serialize($worksheet);
+					$spreadsheet->disconnectWorksheets();            //Disconnect the worksheets adapter
+					unset($spreadsheet);                             //Destroy from the memory
+					}
 
 
-
+}
 
 function Add($subj, $courseNum, $section, $instrctor, $location, $days, $begintime, $endtime){   //$subj, $courseNum, $section, $instrctor, $location, $begintime, $endtime
 	// global $worksheet, $spreadsheet;
@@ -146,48 +156,57 @@ function Add($subj, $courseNum, $section, $instrctor, $location, $days, $beginti
 	 $worksheet->getCell('Q'.$last_row)->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($endtime)+7200));
 	 $worksheet->getStyle('Q'.$last_row)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_TIME1);
 
-
-	 
-	
-	//  $_SESSION['worksheet']= serialize($worksheet);
-	 
-
   updateFile($worksheet);
 }
 
 function Delete($row_no){  //linenumber
-	global $worksheet, $spreadsheet;
+	$worksheet = unserialize($_SESSION['worksheet']);
 	
-	$worksheet->removeRow(row_no);
+	$worksheet->removeRow($row_no);
+	updateFile($worksheet);
 }
 
 
-function Update(){ //linenumber, $subj, $courseNum, $section, $instrctor, $location, $begintime, $endtime
+function Update($row, $courseNum, $section, $instructor, $location, $begintime, $endtime, $days){ //linenumber, $subj, $courseNum, $section, $instrctor, $location, $begintime, $endtime
+	$worksheet = unserialize($_SESSION['worksheet']);
+
+	$worksheet->getCell('B'.$row)->setValue($courseNum);
+	$worksheet->getCell('C'.$row)->setValue($section);
+	$worksheet->getCell('U'.$row)->setValue($instrctor);
+	$worksheet->getCell('R'.$row)->setValue($location);
+	$worksheet->getCell('O'.$row)->setValue($days);
+	$worksheet->getCell('P'.$row)->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($begintime)+7200)); 
+	$worksheet->getStyle('P'.$row)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_TIME1);
+   //  $worksheet->getCell('P'.$row)->setValue($begintime);
+	$worksheet->getCell('Q'.$row)->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($endtime)+7200));
+	$worksheet->getStyle('Q'.$row)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_TIME1);
+
+  updateFile($worksheet);
 
 }
 
 function updateFile($worksheet){
-	$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('F18.xlsx');
+	$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($_SESSION['fileSource']);
 	// $worksheet = unserialize($_SESSION['worksheet']);
 
-	$index = $spreadsheet->getIndex($spreadsheet->getSheetByName('Fall'));
+	$index = $spreadsheet->getIndex($spreadsheet->getSheetByName($_SESSION['worksheetName']));
 	$spreadsheet->removeSheetByIndex($index);
 	
 	$spreadsheet->addExternalSheet($worksheet, $index);
 
-	$spreadsheet->setActiveSheetIndexByName('Fall');
+	$spreadsheet->setActiveSheetIndexByName($_SESSION['worksheetName']);
 
 	$writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
-	$writer->save('F18.xlsx');
+	$writer->save($_SESSION['fileSource']);
 
 	$spreadsheet->disconnectWorksheets();            //Disconnect the worksheets adapter
 		unset($spreadsheet);
 		unset($worksheet);
 
 
-	chmod("F18.xlsx",0766);
+	chmod($_SESSION['fileSource'],0766);
 
-	var_dump(\PhpOffice\PhpSpreadsheet\Shared\Date::getDefaultTimezone());
+	// var_dump(\PhpOffice\PhpSpreadsheet\Shared\Date::getDefaultTimezone());
 	
 
 	//  var_dump($_SESSION['worksheet']);
@@ -224,139 +243,144 @@ function updateFile($worksheet){
 	$('html').hide();
 </script>
 
+
 <script type="text/javascript">
 
-var jsonin = <?php echo $jsonREST; ?>;
-var resources = {};
-var events =[];
-var startdate = new Date(Date.parse(jsonin[2][18]));  //set the start date from excel through PHPSpreadsheet
-
-//  console.log(startdate);
-// console.log($.cal.date(0).addDays(0).format('Y-m-d'));
+var jsonin = <?php if(isset($jsonREST)){ echo $jsonREST; } else { echo '{}';}  ?>;
 
 
-function eventNresourceGenerator() {	
-	//var totalLine = Object.keys(jsonin).length; //This include the blank lines at the end, required valdidation to put intjs
-// console.log(jsonin);
-var classInsession = {};
-var profInclass = {};
-
-$.each(jsonin, (key, array)=>{	
-
-		if(array[17] != null){
-		var roomKey = (array[17].split(" "))[1];
-		var uniquer = (array[17].split(" "))[0];
-		var resourceKey;
-		if(typeof roomKey != 'undefined' && 3>= roomKey.length <= 4){
-
-			 resourceKey = (roomKey.length == 3) ? uniquer[0]+roomKey :  roomKey;
-			resources[resourceKey]= array[17]; 
- 
-			}
-		}
+	$(function(){
+		console.log($.isEmptyObject(jsonin));
+		 if(!$.isEmptyObject(jsonin)){
 
 
+						//prepare for plugin
+
+						var resources = {};
+						var events =[];
+						var startdate = new Date(Date.parse(jsonin[2][18]));  //set the start date from excel through PHPSpreadsheet
+
+						//  console.log(startdate);
+						// console.log($.cal.date(0).addDays(0).format('Y-m-d'));
 
 
-//use return instead of continue because of the function
-		if(array[14] && array[0]){
+						function eventNresourceGenerator() {	
+							//var totalLine = Object.keys(jsonin).length; //This include the blank lines at the end, required valdidation to put intjs
+						// console.log(jsonin);
+						var classInsession = {};
+						var profInclass = {};
 
-			var days = array[14];         //convert the day into array of characters			
-			
-		 for(index=0; index<days.length; index++){
-			var day = days.charAt(index); 
-			
-			var dayinNo = (day=='M') ? 0 : (day=='T' ? 1 : (day=='W' ? 2 : (day=='R' ? 3 : (day=='F' ? 4 : 5))));
-			
-			
-			if(dayinNo<5 ){       					//only row with Subject field and valid day
-				events[events.length] = {
-					uid		: key+array[0]+array[1]+array[2]+day,
-					begins	:  $.cal.date(startdate).addDays(dayinNo).format('Y-m-d')+' '+ array[15],
-					ends	: $.cal.date(startdate).addDays(dayinNo).format('Y-m-d')+' '+ array[16],
-					resource : resourceKey,
-					notes	: "<label class='coursesec'>"+array[0]+array[1]+ "  " +array[2]+'</label>'+"\n"+"<label class = 'room'>" + array[17] + "</label>" +"\n"+"<label class='prof'>"+array[20]+'</label>',
-					//title : array[15].substring(0,5) +"-"+ array[16].substring(0,5)
-					color :  (function(){
-								if(day+array[17]+array[15] in classInsession && classInsession != undefined ){
-									 events[classInsession[day+array[17]+array[15]]]['color'] = '#CD0000';     //Redden existing 
-									return '#CD0000';  //Redden the conflct
-								}
-								else{
-										if(day+array[20]+array[15] in profInclass && classInsession != undefined){
-											events[profInclass[day+array[20]+array[15]]]['color'] = 'orange';
-											return   'orange';
-										}
-										
-											return '#255BA1';
-										
-								}
-							})()
-					};
+						$.each(jsonin, (key, array)=>{	
 
-// classInsession.includes(day+array[17]+array[15]) ?  '#CD0000' : ( profInclass.includes(day+array[20]+array[15]) ? 'orange' :'#255BA1')
-					classInsession[day+array[17]+array[15]] = events.length - 1;
-					profInclass[day+array[20]+array[15]] = events.length - 1;
-					// classInsession.push(day+array[17]+array[15]);     //dayRoomStartTime
-					// profInclass.push(day+array[20]+array[15]);
+								if(array[17] != null){
+								var roomKey = (array[17].split(" "))[1];
+								var uniquer = (array[17].split(" "))[0];
+								var resourceKey;
+								if(typeof roomKey != 'undefined' && 3>= roomKey.length <= 4){
 
-				}
-
-
-
-			}
-
-		}
-		
-	
-
-
-
-	});
-		// console.log(classInsession);
-		//  console.log(classInsession);
-		// return events;
-}
-
-eventNresourceGenerator();
-// console.log(resources);
-
-
-var sortedResources = function(){                        //sorted the Json object to start with MAK A1105
-			var keys = [];
-			var sorted_obj = {};
-
-				for (var key in resources){
-					if(resources.hasOwnProperty(key)){
-						keys.unshift(key);
-					}
-				}
-
-				keys.sort();
-				//  keys.push(keys.shift());
-				//  keys.reverse();
-
-
-				$.each(keys, (i, key)=>{
-
-						 sorted_obj[key] = resources[key];
+									resourceKey = (roomKey.length == 3) ? uniquer[0]+roomKey :  roomKey;
+									resources[resourceKey]= array[17]; 
 						
-
-				});
-
-				return sorted_obj;
-}();
-
-				 console.log(sortedResources);
+									}
+								}
 
 
-$(function(){
+
+
+						//use return instead of continue because of the function
+								if(array[14] && array[0]){
+
+									var days = array[14];         //convert the day into array of characters			
+									
+								for(index=0; index<days.length; index++){
+									var day = days.charAt(index); 
+									
+									var dayinNo = (day=='M') ? 0 : (day=='T' ? 1 : (day=='W' ? 2 : (day=='R' ? 3 : (day=='F' ? 4 : 5))));
+									
+									
+									if(dayinNo<5 ){       					//only row with Subject field and valid day
+										events[events.length] = {
+											uid		: key+array[0]+array[1]+array[2]+day,
+											begins	:  $.cal.date(startdate).addDays(dayinNo).format('Y-m-d')+' '+ array[15],
+											ends	: $.cal.date(startdate).addDays(dayinNo).format('Y-m-d')+' '+ array[16],
+											resource : resourceKey,
+											notes	: "<label class='coursesec'>"+array[0]+array[1]+ "  " +array[2]+'</label>'+"\n"+"<label class = 'room'>" + array[17] + "</label>" +"\n"+"<label class='prof'>"+array[20]+'</label>',
+											//title : array[15].substring(0,5) +"-"+ array[16].substring(0,5)
+											color :  (function(){
+														if(day+array[17]+array[15] in classInsession && classInsession != undefined ){
+															events[classInsession[day+array[17]+array[15]]]['color'] = '#CD0000';     //Redden existing 
+															return '#CD0000';  //Redden the conflct
+														}
+														else{
+																if(day+array[20]+array[15] in profInclass && classInsession != undefined){
+																	events[profInclass[day+array[20]+array[15]]]['color'] = 'orange';
+																	return   'orange';
+																}
+																
+																	return '#255BA1';
+																
+														}
+													})()
+											};
+
+						// classInsession.includes(day+array[17]+array[15]) ?  '#CD0000' : ( profInclass.includes(day+array[20]+array[15]) ? 'orange' :'#255BA1')
+											classInsession[day+array[17]+array[15]] = events.length - 1;
+											profInclass[day+array[20]+array[15]] = events.length - 1;
+											// classInsession.push(day+array[17]+array[15]);     //dayRoomStartTime
+											// profInclass.push(day+array[20]+array[15]);
+
+										}
+
+
+
+									}
+
+								}
+							});
+								// console.log(classInsession);
+								//  console.log(classInsession);
+								// return events;
+						}
+
+						eventNresourceGenerator();
+						// console.log(resources);
+
+
+						var sortedResources = function(){                        //sorted the Json object to start with MAK A1105
+									var keys = [];
+									var sorted_obj = {};
+
+										for (var key in resources){
+											if(resources.hasOwnProperty(key)){
+												keys.unshift(key);
+											}
+										}
+
+										keys.sort();
+										//  keys.push(keys.shift());
+										//  keys.reverse();
+
+
+										$.each(keys, (i, key)=>{
+
+												sorted_obj[key] = resources[key];
+												
+
+										});
+
+										return sorted_obj;
+						}();
+						console.log(sortedResources);
+
+			/////preparation ended here
+
+
 	localStorage.setItem("red", false);
 	localStorage.setItem('orange', false);	
 	var trackprof = {};	var prof = false; 		
 
-
-	$('#calendar').cal({
+		
+	$('#calendar').cal({           				//plugin-call
 		
 		resources : sortedResources,
 
@@ -385,6 +409,9 @@ $(function(){
 
 		eventcreate : function( ){
 			console.log('creation event hit');
+		},
+		eventremove : function( event ){
+			event.stopPropagation();
 		},
 
 		eventmove : function( uid ){
@@ -736,7 +763,8 @@ $('.timepicker').timepicker({
 				editRooms.add(option2);
 			}
 
-
+		}  //if  statement for json obj validation
+	
 			/*****************************************************************************************************
 	******************************************************************************************************
 	******************************************************************************************************
@@ -749,7 +777,7 @@ $('.timepicker').timepicker({
 	*****************************************************************************************************/
 	//NOTE this is the array that the button names come from 
 	var sheets = <?php echo $_SESSION['worksheets']; ?>;
-
+	$('#buttonSection').append('<input type="button" onclick="location.href=\'init.php\';" value=<?php echo basename($_SESSION["fileSource"], ".xlsx")?> (current) />');
 	sheets.forEach((sheet)=>{$('#buttonSection').append('<button type="button" class="sheetName">'+sheet+'</button>');});
 
 	$('button.sheetName').on('click', function(){
@@ -760,7 +788,7 @@ $('.timepicker').timepicker({
 					RequestedSheet: name
 					}, 
 					success: function(data){
-
+					location.replace("resourcemergeddays.php");
 					}
 		});
 
@@ -831,9 +859,6 @@ $('.timepicker').timepicker({
 
 
 
-			// This prevents FOUC 
-			$('html').show();
-
 
 
 //-----------------------------------------------------------------------------------------------------------------------------------------		
@@ -843,14 +868,17 @@ $('.timepicker').timepicker({
 //-----------------------------------------------------------------------------------------------------------------------------------------		
 //-----------------------------------------------------------------------------------------------------------------------------------------		
 // ----------------------------------------------------------------------------------------------------------------------------------------	
-});   //jQuery Document Ready scope
+});   //jQuery Document Ready scope is over here
+
+			// This prevents FOUC 
+			$('html').show();
 
 function refresh(){
 	location.replace("resourcemergeddays.php");
 }
 
 
-</script>
+//the root script scope in html</script>   
 
 <style type="text/css">
 html,body{
@@ -873,9 +901,7 @@ border: 1px solid #bbb;
 
 <body>
 
-<div id="buttonSection">
-
-</div>
+<div id="buttonSection"></div>
 <h1 style="margin:0px auto 0 auto; text-align:center;">CIS Department Scheduler</h1>
 <div style="margin:10px auto 100px auto; text-align:center;">
 <button onclick="$('#addCourse').dialog('open');">Add Course</button>
