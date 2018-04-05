@@ -82,6 +82,8 @@ console.log(files);
 $( function() {
     var dialog =  $( "#dialog" ).dialog({
         autoOpen: true,
+        width: 500,
+        modal: true,
         buttons : buttons
     });
   
@@ -118,8 +120,8 @@ $( function() {
 
 .ui-dialog-content::-webkit-scrollbar {
   -webkit-appearance: none;
-  width: 11px;
-  height: 11px;
+  width: 22px;
+  height: 22px;
 }
 
 .ui-dialog-content::-webkit-scrollbar-thumb {
@@ -130,7 +132,7 @@ $( function() {
 </style>
 </head>
 <body>
-<div id="dialog" title="File(.xlsx) found in directory"></div>
+<div id="dialog" title="File(.xlsx) found in spreadsheet directory"></div>
 </body>
 
 </html>

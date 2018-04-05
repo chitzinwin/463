@@ -39,6 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {         //To catch the POST Request
 	}
 }
 
+
 $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
 
  
@@ -675,7 +676,7 @@ $('.timepicker').timepicker({
 					var ddl = document.getElementById("roomNum");
 					var room = ddl.options[ddl.selectedIndex].text;
 					//console.log(room);
-					alert("done");
+					// alert("done");
 			
 					$.ajax({type: "POST",
 						data: {
@@ -689,10 +690,10 @@ $('.timepicker').timepicker({
 						EndTime: $('#endTime').val(),
 						}, 
 						success: function(data){
-						$(this).dialog("close");
+						// $(this).dialog("close");
 						refresh();
 					},
-			});
+					});
             },
             	"Cancel" : function() {
                 $(this).dialog("close");
@@ -790,7 +791,8 @@ $('.timepicker').timepicker({
 	//NOTE this is the array that the button names come from 
 	var sheets = <?php echo $_SESSION['worksheets']; ?>;
 	$('#buttonSection').append('<input type="button" onclick="location.href=\'init.php\';" value=<?php echo basename($_SESSION["fileSource"], ".xlsx")?> (current) />');
-	sheets.forEach((sheet)=>{$('#buttonSection').append('<button type="button" class="sheetName">'+sheet+'</button>');});
+	sheets.forEach((sheet)=>{$('#buttonSection').append('<button type="button" class="sheetName" id='+sheet+'>'+sheet+'</button>');});
+
 
 	$('button.sheetName').on('click', function(){
 			var name = ($(this).html());
@@ -805,6 +807,8 @@ $('.timepicker').timepicker({
 		});
 
 	});
+
+
 
 	// for(var i = 0; i < sheets.length; i++){
 	// var expandClient = '<button type="button"  id="sheetButton'+ i +'"><i class="fa fa-plus-square-o"></i>' + sheets[i] + '</button>';
@@ -936,16 +940,17 @@ opacity: 1;
 
 <body>
 
-<div id="buttonSection"></div>
 
 <h1 style="margin:0px auto 0 auto; text-align:center;">CIS Department Scheduler</h1>
+
+<div id="buttonSection" ></div>
+
 <div id="contentcontainer" style="visibility: hidden">
-<div style="margin:10px auto 100px auto; text-align:center;">
-<button onclick="$('#addCourse').dialog('open');">Add Course</button>
-<button onclick="refresh()">Refresh</button>
 
-
-</div>
+	<div style="margin:10px auto 100px auto; text-align:center;">
+	<button onclick="$('#addCourse').dialog('open');">Add Course</button>
+	<button onclick="refresh()">Refresh</button>
+	</div>
 
 
 

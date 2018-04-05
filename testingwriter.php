@@ -46,6 +46,7 @@ echo json_encode($reader->listWorksheetNames($fileName));
 
 $worksheet = $spreadsheet->getSheet(0);
 
+// var_dump($worksheet);
 
 // $worksheet -> removeRow(4);     //Seriously delete row using old library
 
@@ -118,9 +119,10 @@ foreach ($worksheet->getRowIterator() AS $row) {
 
 // echo datetime()->format();
 // echo date('D M t Y h:i:s');
-$spreadsheet->disconnectWorksheets();
-unset($spreadsheet);
-var_dump($spreadsheet);
+// var_dump($worksheet)
+// $spreadsheet->disconnectWorksheets();
+// unset($spreadsheet);
+print_r($rows);
 $jsonREST = json_encode($rows);
 // echo $jsonREST;
 // foreach($rows AS $row){
