@@ -145,8 +145,8 @@ function Add($courseNum, $section, $instrctor, $location, $days, $begintime, $en
 //    $begin_excelstandard = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($begintime)+3600);
 //    $end_excelstandard = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($endtime)+3600);
 
-	$worksheet->getCell('A'.$last_row)->etValue(substr($courseNum,0,3));
-	 $worksheet->getCell('B'.$last_row)->setValue($substr($courseNum,3));
+	$worksheet->getCell('A'.$last_row)->setValue(substr($courseNum,0,3));
+	 $worksheet->getCell('B'.$last_row)->setValue(substr($courseNum,3));
 	 $worksheet->getCell('C'.$last_row)->setValue($section);
 	 $worksheet->getCell('U'.$last_row)->setValue($instrctor);
 	 $worksheet->getCell('R'.$last_row)->setValue($location);
@@ -172,7 +172,7 @@ function Update($row, $courseNum, $section, $instructor, $location, $begintime, 
 	$worksheet = unserialize($_SESSION['worksheet']);
 
 	$worksheet->getCell('A'.$row)->setValue(substr($courseNum,0,3));
-	$worksheet->getCell('B'.$row)->setValue($substr($courseNum,3));
+	$worksheet->getCell('B'.$row)->setValue(substr($courseNum,3));
 	$worksheet->getCell('C'.$row)->setValue($section);
 	$worksheet->getCell('U'.$row)->setValue($instructor);
 	$worksheet->getCell('R'.$row)->setValue($location);
@@ -249,7 +249,7 @@ function updateFile($worksheet){
 <script type="text/javascript">
 
 var jsonin = <?php if(isset($jsonREST)){ echo $jsonREST; } else { echo '{}';}  ?>;
-
+console.log(jsonin);
 
 	$(function(){
 
@@ -706,7 +706,7 @@ $('.timepicker').timepicker({
 					var ddl = document.getElementById("editrNum");
 					var room = ddl.options[ddl.selectedIndex].text;
 			
-					$.ajax({type: "POST",
+			var xhr = $.ajax({type: "POST",
 						data: {
 						Action: "UPDATE",
 						LineNumber: $("#editLineNum").val(),
@@ -720,9 +720,10 @@ $('.timepicker').timepicker({
 						}, 
 						success: function(data){
 							console.log("hi");
-							refresh();
+							
 					},
 			});
+			console.log(xhr);
             },
             	"Cancel" : function() {
                 $(this).dialog("close");
