@@ -39,7 +39,7 @@ $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
 // $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('F18.xlsx');
 $spreadsheet = $reader->load($fileName);
 
-echo json_encode($spreadsheet->getSheetNames());    //Worksheets in the xlsx files
+print_r($spreadsheet->getSheetNames());    //Worksheets in the xlsx files
 
 echo json_encode($reader->listWorksheetNames($fileName));
 

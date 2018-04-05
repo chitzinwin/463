@@ -82,6 +82,7 @@ $spreadsheet = $reader->load($_SESSION['fileSource']);
 
 
 
+
 		//  $_SESSION['worksheet']= serialize((unserialize($_SESSION['spreadsheet']))->getSheetByName('Fall'));
 		//   $worksheet = unserialize($_SESSION['worksheet']);
 		// $worksheet -> removeRow(83);
@@ -153,7 +154,7 @@ function Add($courseNum, $section, $instrctor, $location, $days, $begintime, $en
 	 $worksheet->getCell('R'.$last_row)->setValue($location);
 	 $worksheet->getCell('O'.$last_row)->setValue($days);
 	 $worksheet->getCell('P'.$last_row)->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($begintime)+7200)); 
-	 $worksheet->getStyle('P'.$last_row)->getNumberFormat()->setFormatCode('h:mm:ss AM/PM');
+	 $worksheet->getStyle('P'.$last_row)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_TIME1);
 	//  $worksheet->getCell('P'.$last_row)->setValue($begintime);
 	 $worksheet->getCell('Q'.$last_row)->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($endtime)+7200));
 	 $worksheet->getStyle('Q'.$last_row)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_TIME1);
