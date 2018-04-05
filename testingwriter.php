@@ -122,7 +122,7 @@ foreach ($worksheet->getRowIterator() AS $row) {
 // var_dump($worksheet)
 // $spreadsheet->disconnectWorksheets();
 // unset($spreadsheet);
-print_r($rows);
+// print_r($rows);
 $jsonREST = json_encode($rows);
 // echo $jsonREST;
 // foreach($rows AS $row){
@@ -145,7 +145,7 @@ $jsonREST = json_encode($rows);
 
  $baseDate = \PhpOffice\PhpSpreadsheet\Shared\Date::getExcelCalendar();
 
- print $baseDate;
+//  print $baseDate;
 
 // $getexceltime =  $worksheet->getCell('P2')->getValue();
 // // $phptime = \PhpOffice\PhpSpreadsheet\Shared\Date::ExcelToPHP($getexceltime);
@@ -165,6 +165,8 @@ $jsonREST = json_encode($rows);
 // // // $now = time();
 $exceltime = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($nutime)+3600);   //PHP/Unix (UST time) to Excel timestamp
 
+print $exceltime;
+// print PHPExcel_Calculation_DateTime::TIMEVALUE($nutime);
 //  printexceltime);   
 // // var_dump(\PhpOffice\PhpSpreadsheet\Shared\Date::getDefaultTimezone());
 

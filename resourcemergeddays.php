@@ -111,10 +111,10 @@ $spreadsheet = $reader->load($_SESSION['fileSource']);
 										$_SESSION['last_row']=$row->getRowIndex();
 										break;}
 
-							$cells[15]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[15]))->format("H:i:s");
-							$cells[16]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[16]))->format("H:i:s");
-							$cells[18]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[18]))->format("n/j/Y");
-							$cells[19]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[19]))->format("n/j/Y");
+							$cells[15]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[15]))->format("H:i:s");  //starttime
+							$cells[16]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[16]))->format("H:i:s");	 //enddtime
+							$cells[18]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[18]))->format("n/j/Y");  //startdate
+							$cells[19]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[19]))->format("n/j/Y");	 //enddate
 							
 							
 
@@ -153,7 +153,7 @@ function Add($courseNum, $section, $instrctor, $location, $days, $begintime, $en
 	 $worksheet->getCell('R'.$last_row)->setValue($location);
 	 $worksheet->getCell('O'.$last_row)->setValue($days);
 	 $worksheet->getCell('P'.$last_row)->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($begintime)+7200)); 
-	 $worksheet->getStyle('P'.$last_row)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_TIME1);
+	 $worksheet->getStyle('P'.$last_row)->getNumberFormat()->setFormatCode('h:mm:ss AM/PM');
 	//  $worksheet->getCell('P'.$last_row)->setValue($begintime);
 	 $worksheet->getCell('Q'.$last_row)->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($endtime)+7200));
 	 $worksheet->getStyle('Q'.$last_row)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_TIME1);
@@ -250,11 +250,10 @@ function updateFile($worksheet){
 <script type="text/javascript">
 
 var jsonin = <?php if(isset($jsonREST)){ echo $jsonREST; } else { echo '{}';}  ?>;
-console.log(jsonin);
 
 	$(function(){
 
-		console.log($.isEmptyObject(jsonin));
+		// console.log($.isEmptyObject(jsonin));
 		 if(!$.isEmptyObject(jsonin)){
 
 
@@ -282,7 +281,7 @@ console.log(jsonin);
 								var resourceKey;
 								if(typeof roomKey != 'undefined' && 3>= roomKey.length <= 4){
 
-									resourceKey = (roomKey.length == 3) ? uniquer[0]+roomKey :  roomKey;
+									resourceKey = (roomKey.length == 3) ? uniquer[0]+roomKey :  ((roomKey[0]=='A') ?  roomKey.replace('A','E') : roomKey);
 									resources[resourceKey]= array[17]; 
 						
 									}
