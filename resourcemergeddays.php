@@ -282,8 +282,8 @@ var jsonin = <?php if(isset($jsonREST)){ echo $jsonREST; } else { echo '{}';}  ?
 								var resourceKey;
 								if(typeof roomKey != 'undefined' && 3>= roomKey.length <= 4){
 
-									resourceKey = (roomKey.length == 3) ? uniquer[0]+roomKey :  ((roomKey[0]=='A') ?  roomKey.replace('A','E') : roomKey);
-									resources[resourceKey]= array[17]; 
+									resourceKey = (roomKey.length == 3) ? ((uniquer[0]=='H') ? 'E2'+uniquer[0]+roomKey : uniquer[0]+roomKey) :  ((roomKey[0]=='A') ?  roomKey.replace('A','E') : roomKey);
+									resources[resourceKey]= array[17];  
 						
 									}
 								}
