@@ -210,9 +210,9 @@ position: absolute;
 font-size: 1em;
 background: transparent repeat-x 0 -3px;
 cursor: pointer;
--webkit-transition: -webkit-box-shadow 0.2s ease-in-out;
+/* -webkit-transition: -webkit-box-shadow 0.2s ease-in-out;
 -moz-transition: -moz-box-shadow 0.2s ease-in-out;
-transition: box-shadow 0.2s ease-in-out;
+transition: box-shadow 0.2s ease-in-out; */
 }
 
 .ui-cal-week .ui-cal-event.begin{
@@ -257,7 +257,7 @@ border-top-right-radius: 6px;
 background-color: #46f;
 z-index: 2;
 -webkit-box-shadow: 1px 0px 30px rgba( 80, 80, 80, 0.5 ); /* CSS3 */
--moz-box-shadow: 1px 0px 30px rgba( 80, 80, 80, 0.5 ); /* CSS3 */
+-moz-box-shadow: 1px 0px 30px rgba( 80, 80, 80, 0.5 );  /* CSS3 */
 box-shadow: 1px 0px 30px rgba( 80, 80, 80, 0.5 ); /* CSS3 */
 cursor: pointer;
 }

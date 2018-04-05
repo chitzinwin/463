@@ -517,9 +517,10 @@ console.log(jsonin);
 										//  $("label.coursesec, label.prof").css( 'pointer-events', 'auto' );
 									
 									$("label.coursesec, label.prof").on('click' ,function(e){
-										if(selected){
+										if(selected){										
 											e.stopPropagation();
 											selected=false;
+
 										}
 										else{
 											var red = $(this).parent().css('background-color') === 'rgb(249, 6, 6)' ? true : false;
@@ -575,7 +576,6 @@ console.log(jsonin);
 												 if(!prof){
 														 trackprof={};
 												 }	
-												 selected = false;						
 											}
 
 									});
@@ -640,7 +640,7 @@ $('.timepicker').timepicker({
 			// Event handlers for Calendar
 			// Title click to allow editing of the calendar events
 			$("p.title").on('click', function(){
-				$(this).parent().css( 'z-index', '-1');
+				
 
 				var parent = $(this).parent();
 				var details = parent.children( ".details" );
@@ -731,7 +731,7 @@ $('.timepicker').timepicker({
         		width: 500,
         		height: 200,
         		autoOpen: false,
-				zIndex: 19999,
+				zIndex: 9999,
     		});
 
 			// Adds the buttons for the add course dialog
