@@ -308,15 +308,15 @@ console.log(jsonin);
 											begins	:  $.cal.date(startdate).addDays(dayinNo).format('Y-m-d')+' '+ array[15],
 											ends	: $.cal.date(startdate).addDays(dayinNo).format('Y-m-d')+' '+ array[16],
 											resource : resourceKey,
-											notes	: "<label class='coursesec'>"+array[0]+array[1]+ "  " +array[2]+'</label>'+"\n"+"<label class = 'room'>" + array[17] + "</label>" +"\n"+"<label class='prof'>"+array[20]+'</label>',
+											notes	: "<label class='coursesec'>"+array[0]+array[1]+'</label>&#09;'+array[2]+"\n"+"<label class = 'room'>" + array[17] + "</label>" +"\n"+"<label class='prof'>"+array[20]+'</label>',
 											//title : array[15].substring(0,5) +"-"+ array[16].substring(0,5)
 											color :  (function(){
-														if(day+array[17]+array[15] in classInsession && classInsession != undefined ){
+														if((day+array[17]+array[15]) in classInsession && classInsession != undefined ){
 															events[classInsession[day+array[17]+array[15]]]['color'] = '#CD0000';     //Redden existing 
 															return '#CD0000';  //Redden the conflct
 														}
 														else{
-																if(day+array[20]+array[15] in profInclass && classInsession != undefined){
+																if((day+array[20]+array[15]) in profInclass && classInsession != undefined){
 																	events[profInclass[day+array[20]+array[15]]]['color'] = 'orange';
 																	return   'orange';
 																}
@@ -328,8 +328,8 @@ console.log(jsonin);
 											};
 
 						// classInsession.includes(day+array[17]+array[15]) ?  '#CD0000' : ( profInclass.includes(day+array[20]+array[15]) ? 'orange' :'#255BA1')
-											classInsession[day+array[17]+array[15]] = events.length - 1;
-											profInclass[day+array[20]+array[15]] = events.length - 1;
+											classInsession[day+array[17]+array[15]] = events.length - 1;   
+											profInclass[day+array[20]+array[15]] = events.length - 1;//dayprofstarttime
 											// classInsession.push(day+array[17]+array[15]);     //dayRoomStartTime
 											// profInclass.push(day+array[20]+array[15]);
 
@@ -381,7 +381,7 @@ console.log(jsonin);
 
 	localStorage.setItem("red", false);
 	localStorage.setItem('orange', false);	
-	var trackprof = {};	var prof = false; 		
+	var trackprof = {};	var prof = false; var selected = false;
 
 		
 	$('#calendar').cal({           				//plugin-call
@@ -421,10 +421,108 @@ console.log(jsonin);
 
 		eventselect : function(){
 									// $("label.coursesec, label.prof").on('click',
-									function delayClick(){
+								
+								selected = true;
+								// function clickonclassnprof(){
 											 
 																		
-											 var red = $(this).parent().css('background-color') === 'rgb(249, 6, 6)' ? true : false;
+								// 			 var red = $(this).parent().css('background-color') === 'rgb(249, 6, 6)' ? true : false;
+								// 			 var orange = ($(this).parent().css('background-color') === 'rgb(250, 182, 56)') ? true : false;
+	 
+								// 			 var whichclass = $(this).attr('class');
+								// 			  prof = (whichclass == 'prof') ? true : false;
+	 
+								// 			 // console.log(Object.keys(trackprof).length);
+								// 			 if(Object.keys(trackprof).length >0){  //to retore the color in the next click after name click
+	 
+								// 				 document.querySelectorAll('[data-id]').forEach((mainblock)=>{
+								// 						 if($(mainblock).attr('data-id') in trackprof){
+								// 					 $(mainblock).attr('style',(trackprof[$(mainblock).attr('data-id')]).title);
+								// 					 $(mainblock).children('.details').attr('style',(trackprof[$(mainblock).attr('data-id')]).note);
+								// 					 // console.log($(mainblock).attr('style'));
+								// 						 }
+	 
+								// 				 });
+												 
+								// 				 }
+												 
+								// 			 document.querySelectorAll("label."+whichclass).forEach((session)=>{
+								// 				 if($(this).html()===$(session).html()){		
+								// 				 // console.log($(session).html());
+												 
+								// 			 if(prof){trackprof[$(session).parent().parent().attr('data-id')]={'title' : $(session).parent().parent().attr('style'), 'note': $(session).parent().attr('style')} ;}
+								// 			  var title = prof ? 'limegreen' : 'gold';
+								// 			  var note = prof ? 'lime' : 'yellow';
+								// 				 $(session).parent().css({'background-color': note, 'color':'black'});
+								// 				 $(session).parent().parent().css({'background-color': title, 'color':'black'});
+								// 				 }
+								// 				 else{
+								// 					 if($(session).parent().css('background-color') === 'rgb(255, 255, 0)'){  // current yellow
+																 
+								// 						 var titlecolor = (localStorage.getItem('red') == 'true') ? 'rgb(194, 10, 10)' : ((localStorage.getItem('orange') == 'true') ? 'rgb(242, 162, 13)' : 'rgb(37, 91, 162)');
+								// 						 var notecolor = (localStorage.getItem('red') == 'true')  ? 'rgb(249, 6, 6)' :  ((localStorage.getItem('orange') == 'true') ? 'rgb(250, 182, 56)' :  'rgb(40, 114, 210)');
+								// 						 // console.log('middle  '+Boolean(localStorage.getItem('red')));  
+								// 						 $(session).parent().css({'background-color': notecolor, 'color':'white'});
+								// 						 $(session).parent().parent().css({'background-color': titlecolor, 'color':'white'});
+	 
+								// 					 }
+	 
+																								 
+								// 				 }
+												 
+	 
+								// 				 });  //for each loop end here
+	 
+													 
+								// 				 localStorage.setItem("red", red);
+								// 				 localStorage.setItem("orange", orange);
+								// 				 if(!prof){
+								// 						 trackprof={};
+								// 				 }
+											 
+	 
+								// 					 // console.log(localStorage.getItem("red"));
+								// 					 console.log(trackprof);
+											 
+								// 		 //   console.log($(this).parent().attr('style'));
+								// 		 // console.log($(this).parent().css('background-color'));
+								// 		 //  console.log($(this).html());
+
+								// 		 };
+								// 		 $("label.coursesec, label.prof").on('click' ,clickonclassnprof);
+
+		},
+		
+		eventremove : function( uid ){
+			console.log( 'Removed event: '+uid );
+		},
+		
+		
+		eventnotesedit : function( uid ){
+			console.log( 'Edited Notes for event: '+uid );
+		},
+
+		eventdraw   : function (){
+			console.log('Draw event');
+		},
+
+
+		
+		
+		// Load events as .ics
+		events : events
+	
+		});
+	
+										//  $("label.coursesec, label.prof").css( 'pointer-events', 'auto' );
+									
+									$("label.coursesec, label.prof").on('click' ,function(e){
+										if(selected){
+											e.stopPropagation();
+											selected=false;
+										}
+										else{
+											var red = $(this).parent().css('background-color') === 'rgb(249, 6, 6)' ? true : false;
 											 var orange = ($(this).parent().css('background-color') === 'rgb(250, 182, 56)') ? true : false;
 	 
 											 var whichclass = $(this).attr('class');
@@ -476,45 +574,11 @@ console.log(jsonin);
 												 localStorage.setItem("orange", orange);
 												 if(!prof){
 														 trackprof={};
-												 }
-											 
-	 
-													 // console.log(localStorage.getItem("red"));
-													 console.log(trackprof);
-											 
-										 //   console.log($(this).parent().attr('style'));
-										 // console.log($(this).parent().css('background-color'));
-										 //  console.log($(this).html());
+												 }	
+												 selected = false;						
+											}
 
-										 };
-										//  $("label.coursesec, label.prof").css( 'pointer-events', 'auto' );
-
-									$("label.coursesec, label.prof").bind('click' ,delayClick);
-								
-
-		},
-		
-		eventremove : function( uid ){
-			console.log( 'Removed event: '+uid );
-		},
-		
-		
-		eventnotesedit : function( uid ){
-			console.log( 'Edited Notes for event: '+uid );
-		},
-
-		eventdraw   : function (){
-			console.log('Draw event');
-		},
-
-
-		
-		
-		// Load events as .ics
-		events : events
-	
-		});
-		
+									});
 		
 				// $("label.coursesec, label.prof").unbind('click');
 
