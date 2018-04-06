@@ -688,12 +688,14 @@ $('.timepicker').timepicker({
 				var coursesecdetails = details.children( ".coursesec").text();
 				var roomdetails = details.children( ".room" ).text();
 				var profdetails = details.children( ".prof" ).text();
+				var sectiondetails = details.children( ".section" ).text();
 				var time = parent.children( ".title").text();
 				var begin = (time.substr(0, (time.indexOf("-")-1))).trim();
 				var end = (time.substr((time.indexOf("-")+1), time.length)).trim();
 				$("#editLineNum").val(lineNum);
-				$("#editsNum").val(coursesecdetails.substr(-2));
-				$("#editcNum").val(coursesecdetails.substr(0, (coursesecdetails.indexOf(" "))));
+
+				$("#editsNum").val(sectiondetails);
+				$("#editcNum").val(coursesecdetails);
 				$("#editprof").val(profdetails);
 				$('#editrNum option:contains("roomdetails")');
 				$("#editdays").val(days);
@@ -778,7 +780,7 @@ $('.timepicker').timepicker({
 					var ddl = document.getElementById("editrNum");
 					var room = ddl.options[ddl.selectedIndex].text;
 			
-			var xhr = $.ajax({type: "POST",
+			$.ajax({type: "POST",
 						data: {
 						Action: "UPDATE",
 						LineNumber: $("#editLineNum").val(),
@@ -795,7 +797,6 @@ $('.timepicker').timepicker({
 							
 					},
 			});
-			console.log(xhr);
             },
             	"Cancel" : function() {
                 $(this).dialog("close");
@@ -1057,14 +1058,14 @@ opacity: 1;
 			</br>
 			</br>
 			<div style="float: right;">
-			<label for="sNum">Section Number:</label>
-			<input type="text" id="sNum">
+			<label for="cNum">Course Number:</label>
+			<input type="text" id="cNum">
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
-			<label for="cNum">Course Number:</label>
-			<input type="text" id="cNum">
+			<label for="sNum">Section Number:</label>
+			<input type="text" id="sNum">
 			</div>
 			</br>
 			</br>
@@ -1120,14 +1121,14 @@ opacity: 1;
 			</br>
 			</br>
 			<div style="float: right;">
-			<label for="editsNum">Section Number:</label>
-			<input type="text" id="editsNum">
-			</div>
-			</br>
-			</br>
-			<div style="float: right;">
 			<label for="editcNum">Course Number:</label>
 			<input type="text" id="editcNum">
+			</div>
+			</br>
+			</br>	
+			<div style="float: right;">
+			<label for="editsNum">Section Number:</label>
+			<input type="text" id="editsNum">
 			</div>
 			</br>
 			</br>
