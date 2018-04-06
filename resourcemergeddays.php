@@ -2,9 +2,16 @@
 require "vendor/autoload.php";
 use \PhpOffice\PhpSpreadsheet\Spreadsheet;
 use \PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\Cache\Simple\FilesystemCache;
+
+// $cache = new FilesystemCache();
+
 
 $cacheMethod = \PHPExcel_CachedObjectStorageFactory::cache_in_memory_gzip;                //compress memory usage
 \PHPExcel_Settings::setCacheStorageMethod($cacheMethod);
+
+// \PhpOffice\PhpSpreadsheet\Settings::setCache($cache);
+
 session_start();
 
 // ini_set('memory_limit', '-1');
@@ -308,7 +315,7 @@ var jsonin = <?php if(isset($jsonREST)){ echo $jsonREST; } else { echo '{}';}  ?
 											begins	:  $.cal.date(startdate).addDays(dayinNo).format('Y-m-d')+' '+ array[15],
 											ends	: $.cal.date(startdate).addDays(dayinNo).format('Y-m-d')+' '+ array[16],
 											resource : resourceKey,
-											notes	: "<label class='coursesec'>"+array[0]+'&nbsp;'+array[1]+'</label>&#09;'+array[2]+"\n"+"<label class = 'room'>" + array[17] + "</label>" +"\n"+"<label class='prof'>"+array[20]+'</label>',
+											notes	: "<label class='coursesec'>"+array[0]+'&nbsp;'+array[1]+'</label>&#09;<label class=section>'+array[2]+"</label>\n"+"<label class = 'room'>" + array[17] + "</label>" +"\n"+"<label class='prof'>"+array[20]+'</label>',
 											//title : array[15].substring(0,5) +"-"+ array[16].substring(0,5)
 											color :  (function(){
 														if((day+array[17]+array[15]) in classInsession && classInsession != undefined ){

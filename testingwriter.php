@@ -41,12 +41,43 @@ $spreadsheet = $reader->load($fileName);
 
 print_r($spreadsheet->getSheetNames());    //Worksheets in the xlsx files
 
+
 echo json_encode($reader->listWorksheetNames($fileName));
+
+
 
 
 $worksheet = $spreadsheet->getSheet(0);
 
-// var_dump($worksheet);
+$highestCol = $worksheet->getHighestColumn();
+$row = $worksheet->getRowIterator(1)->current();
+
+
+
+
+$cellIterator = $row->getCellIterator();
+
+
+
+
+// $dataArray = $worksheet->toArray();
+
+// var_dump($dataArray);
+
+$highestRow = $worksheet->getHighestRow(); // e.g. 10
+$highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
+$highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn); // e.g. 5
+
+$dataArray = $spreadsheet->getActiveSheet()
+    ->toArray(
+        'A1:'.$highestColumn.'1',     // The worksheet range that we want to retrieve
+        NULL,        // Value that should be returned for empty cells
+        TRUE,        // Should formulas be calculated (the equivalent of getCalculatedValue() for each cell)
+        TRUE,        // Should values be formatted (the equivalent of getFormattedValue() for each cell)
+        TRUE         // Should the array be indexed by cell row and cell column
+    );
+
+var_dump($dataArray);
 
 // $worksheet -> removeRow(4);     //Seriously delete row using old library
 
@@ -141,7 +172,7 @@ $jsonREST = json_encode($rows);
 //date_default_timezone_set('America/New_York');
 // PhpOffice\PhpSpreadsheet\Shared\TimeZone::setTimeZone('America/New_York');
 
- print \PhpOffice\PhpSpreadsheet\Shared\TimeZone::getTimeZone();
+//  print \PhpOffice\PhpSpreadsheet\Shared\TimeZone::getTimeZone();
 
  $baseDate = \PhpOffice\PhpSpreadsheet\Shared\Date::getExcelCalendar();
 
@@ -165,7 +196,7 @@ $jsonREST = json_encode($rows);
 // // // $now = time();
 $exceltime = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($nutime)+3600);   //PHP/Unix (UST time) to Excel timestamp
 
-print $exceltime;
+// print $exceltime;
 // print PHPExcel_Calculation_DateTime::TIMEVALUE($nutime);
 //  printexceltime);   
 // // var_dump(\PhpOffice\PhpSpreadsheet\Shared\Date::getDefaultTimezone());
