@@ -86,21 +86,8 @@ if(isset($_SESSION['worksheetName'])){
 $spreadsheet = $reader->load($_SESSION['fileSource']);
 
  $worksheet = $spreadsheet->getSheetByName($_SESSION['worksheetName']);   //$_SESSION['worksheetName']
-				$firstrow = $worksheet->getRowIterator(1)->current();    //prepare for verification
-				$cellIterator = $firstrow->getCellIterator();
-				$cellIterator->setIterateOnlyExistingCells(true);
-	$columns = array();  //to check with format
-				foreach ($cellIterator as $cell) {
-					$columns[] =  $cell->getValue();
-				}
 
-	$format = array("Subject","CourseNum","Section","Credits","Schedule_Type","Instructional_Method","CAP","SWS","Pmt","Linked_Crs","Cross-Listed","Part_of_Term","Notes to Registrar","Order","Days","Begin_Time","End_Time","Location","StartDate","EndDate","PrimaryInstructor","Inst_workload","Inst_%_Responsibility","Instructor_2","Inst_2_workload","Inst_2_%_Resp","Instructor_3","Inst_3_workload","Inst_3_%_Resp","CRN","TERM","TERM_DESC","COLL_CODE","DEPT","Long_title","Subtitle","Expr1036","START_DATE","END_DATE","Section_Text","Prerequisite","CAMPUS","ProvostMessage","RegistrarMessage",null,null,null,null,null,null,null,null,"FACULTY");
-
-	if($columns != $format) {
-		echo "<script>alert(\"Sorry ".$_SESSION['worksheetName']." sheet is not compatible with this scheduler!\")</script>"; 
-		
-	}else{
-
+$format = array("Subject","CourseNum","Section","Credits","Schedule_Type","Instructional_Method","CAP","SWS","Pmt","Linked_Crs","Cross-Listed","Part_of_Term","Notes to Registrar","Order","Days","Begin_Time","End_Time","Location","StartDate","EndDate","PrimaryInstructor","Inst_workload","Inst_%_Responsibility","Instructor_2","Inst_2_workload","Inst_2_%_Resp","Instructor_3","Inst_3_workload","Inst_3_%_Resp","CRN","TERM","TERM_DESC","COLL_CODE","DEPT","Long_title","Subtitle","Expr1036","START_DATE","END_DATE","Section_Text","Prerequisite","CAMPUS","ProvostMessage","RegistrarMessage",null,null,null,null,null,null,null,null,"FACULTY");
 		//  $_SESSION['worksheet']= serialize((unserialize($_SESSION['spreadsheet']))->getSheetByName('Fall'));
 		//   $worksheet = unserialize($_SESSION['worksheet']);
 		// $worksheet -> removeRow(83);
@@ -111,12 +98,11 @@ $spreadsheet = $reader->load($_SESSION['fileSource']);
 							if($skipfirstline){$skipfirstline=false; continue;}  
 							
 									$cellIterator = $row->getCellIterator();
-											try {
-												$cellIterator->setIterateOnlyExistingCells(true);
-											} catch (Exception $e) {
-												break;
-											}
-									// $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+									try {
+										$cellIterator->setIterateOnlyExistingCells(true);
+									} catch (Exception $e) {
+										continue;
+									}
 									$cells = [];
 									foreach ($cellIterator as $cell) {
 										$cells[] = $cell->getValue();
@@ -124,8 +110,11 @@ $spreadsheet = $reader->load($_SESSION['fileSource']);
 										if($cell->getCoordinate()[0] == 'S' or $cell->getCoordinate()[0] == 'T' ){
 											$worksheet->getStyle($cell->getCoordinate())->getNumberFormat()->setFormatCode('m/dd/yyyy');    //Convert back to Excel standard of date
 										}
-									}
-									if(isset($cells) && !is_null($cells[0])){
+
+									
+										}
+									
+									if(!is_null($cells[0])){
 
 										$cells[15]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[15]))->format("H:i:s");  //starttime
 										$cells[16]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[16]))->format("H:i:s");	 //enddtime
@@ -140,6 +129,8 @@ $spreadsheet = $reader->load($_SESSION['fileSource']);
 											$foundEmpty=false;
 										}
 									}
+
+						
 						}
 					$jsonREST = json_encode($rows);
 
@@ -148,7 +139,7 @@ $spreadsheet = $reader->load($_SESSION['fileSource']);
 					$spreadsheet->disconnectWorksheets();            //Disconnect the worksheets adapter
 					unset($spreadsheet);                             //Destroy from the memory
 					}
-	}
+
 
 }
 
@@ -236,8 +227,9 @@ function updateFile($worksheet){
 	 exit;
 }
 
-////////////////////////////////////////PHP END HERE///////////////////////////////////////////////////////
+
 ?>         
+																						<!-- PHP END HERE-->
 
 <!doctype html>
 <html>
@@ -261,7 +253,7 @@ function updateFile($worksheet){
 <link rel="stylesheet" media="screen" href="schedulejs/jquery-ui.css"/>
 
 <script>
-		$('.contentcontainer').hide();
+		$('#contentcontainer').hide();
 	// This prevents Flash of Unstyled Content by hiding all HTML before everyting can load.  Show is called in function() below.
 </script>
 
@@ -269,7 +261,6 @@ function updateFile($worksheet){
 <script type="text/javascript">
 
 var jsonin = <?php if(isset($jsonREST)){ echo $jsonREST; } else { echo '{}';}  ?>;
-console.log(jsonin);
 
 	$(function(){
 
@@ -281,11 +272,8 @@ console.log(jsonin);
 
 						var resources = {};
 						var events =[];
-						var startdate;
-						for (var key in jsonin) {
-						 startdate = new Date(Date.parse(jsonin[key][18]));  //set the start date from excel through PHPSpreadsheet
-						 break;
-						}
+						var startdate = new Date(Date.parse(jsonin[2][18]));  //set the start date from excel through PHPSpreadsheet
+
 						//  console.log(startdate);
 						// console.log($.cal.date(0).addDays(0).format('Y-m-d'));
 
@@ -651,24 +639,13 @@ $('.timepicker').timepicker({
 				timeFormat: 'h:mm p',
 				interval: 10,
 				minTime: '8:00am',
-				maxTime: '10:00pm',
+				maxTime: '6:00pm',
 				defaultTime: '8:00am',
 				startTime: '8:00am',
 				dynamic: true,
 				dropdown: false,
     			scrollbar: false
 			});
-$('.timepickerend').timepicker({
-				timeFormat: 'h:mm p',
-				interval: 10,
-				minTime: '8:00am',
-				maxTime: '10:00pm',
-				defaultTime: '8:50am',
-				startTime: '8:50am',
-				dynamic: true,
-				dropdown: false,
-    			scrollbar: false
-});
 
 			// Event handlers for Calendar
 			// Title click to allow editing of the calendar events
@@ -728,9 +705,8 @@ $('.timepickerend').timepicker({
 				//$("#editdays").val(parent.attr("data-id").substr(-1));
 				$("#editbeginTime").val(begin);
 				$("#editendTime").val(end);
-				//$("select[name='editRoom']").find("option[value='" + roomdetails + "']").attr("selected",true);
-				//$('select').val(roomdetails);
-				$("#editRoomAuto").val(roomdetails);
+				$("select[name='editRoom']").find("option[value='" + roomdetails + "']").attr("selected",true);
+				$('select').val(roomdetails);
 				$('#editCourse').dialog('open');
 
 			});
@@ -773,15 +749,8 @@ $('.timepickerend').timepicker({
 			// Adds the buttons for the add course dialog
 			$("#addCourse").dialog('option', 'buttons', {
             	"Add Course" : function() {
-					//var ddl = document.getElementById("roomNum");
-					//var room = ddl.options[ddl.selectedIndex].text;
-
-					var beginTime = $('#beginTime').val();
-					var endTime = $('#endTime').val();
-					if(beginTime == endTime && beginTime != '' && endTime != ''){
-						alert("Begin time cannot equal end time!");
-						return;
-					}
+					var ddl = document.getElementById("roomNum");
+					var room = ddl.options[ddl.selectedIndex].text;
 					//console.log(room);
 					// alert("done");
 			
@@ -791,10 +760,10 @@ $('.timepickerend').timepicker({
 						CourseNum: $('#cNum').val(),
 						Section: $('#sNum').val(),
 						PrimaryInstructor: $('#prof').val(),
-						Location: $('#addroomnumauto').val(),
+						Location: room,
 						Days: $("#days").val(),
-						BeginTime: beginTime,
-						EndTime: endTime,
+						BeginTime: $('#beginTime').val(),
+						EndTime: $('#endTime').val(),
 						}, 
 						success: function(data){
 						// $(this).dialog("close");
@@ -811,8 +780,8 @@ $('.timepickerend').timepicker({
 			// Adds the buttons for the add course dialog
 			$("#editCourse").dialog('option', 'buttons', {
             	"Confirm Edit" : function() {
-					//var ddl = document.getElementById("editrNum");
-					//var room = ddl.options[ddl.selectedIndex].text;
+					var ddl = document.getElementById("editrNum");
+					var room = ddl.options[ddl.selectedIndex].text;
 			
 			$.ajax({type: "POST",
 						data: {
@@ -821,17 +790,17 @@ $('.timepickerend').timepicker({
 						CourseNum: $('#editcNum').val(),
 						Section: $('#editsNum').val(),
 						PrimaryInstructor: $('#editprof').val(),
-						Location: $("#editRoomAuto").val(),
+						Location: room,
 						BeginTime: $('#editbeginTime').val(),
 						EndTime: $('#editendTime').val(),
 						Days: $("#editdays").val()
 						}, 
 						success: function(data){
-							refresh();							
+							console.log("hi");
+							
 					},
 			});
             },
-				
             	"Cancel" : function() {
                 $(this).dialog("close");
             	}
@@ -866,21 +835,21 @@ $('.timepickerend').timepicker({
 
 
 			// Loops through resources JSON and adds each room with key to the ddls
-			// var addRooms = document.getElementById("roomNum");
-			// var editRooms = document.getElementById("editrNum");
-			// for (var key in resources){
-			// 	var option1 = document.createElement("option");
-			// 	option1.value = resources[key];
-			// 	option1.text = resources[key];
-			// 	var option2 = document.createElement("option");
-			// 	option2.value = resources[key];
-			// 	option2.text = resources[key];
+			var addRooms = document.getElementById("roomNum");
+			var editRooms = document.getElementById("editrNum");
+			for (var key in resources){
+				var option1 = document.createElement("option");
+				option1.value = resources[key];
+				option1.text = resources[key];
+				var option2 = document.createElement("option");
+				option2.value = resources[key];
+				option2.text = resources[key];
 
-			// 	addRooms.add(option1);
-			// 	editRooms.add(option2);
-			// }
+				addRooms.add(option1);
+				editRooms.add(option2);
+			}
 	// This prevents FOUC 
-	 $('.contentcontainer').css("visibility", "visible");
+	 $('#contentcontainer').css("visibility", "visible");
 	
 		}  //if  statement for json obj validation
 	
@@ -902,16 +871,16 @@ $('.timepickerend').timepicker({
 
 	$('button.sheetName').on('click', function(){
 			var name = ($(this).html());
-	var xhr = $.ajax({type: "POST",
+	$.ajax({type: "POST",
 						data: {
 					Action: "SETSHEET",
 					RequestedSheet: name
 					}, 
 					success: function(data){
-				  location.replace("resourcemergeddays.php");
+					location.replace("resourcemergeddays.php");
 					}
 		});
-	console.log(xhr);
+
 	});
 
 
@@ -977,35 +946,6 @@ $('.timepickerend').timepicker({
 					source: profs
 				});
 
-		var queryRooms = document.querySelectorAll("label.room");
-				var rooms = [];
-
-				queryRooms.forEach(
-					function(currentValue, currentIndex, listObj) { 
-						//console.log(currentValue.getAttribute("data-id"));
-						var room = currentValue.innerHTML;
-						// if(dataid.substring(0,(dataid.length-1)) == key){
-						// 	matches.push(currentValue.getAttribute("data-id"));
-						// }
-						if(!rooms.includes(room)){
-							rooms.push(room);
-							//console.log(prof);
-						}
-
-  					}
-				)
-
-
-$("#addroomnumauto").autocomplete({
-	source: rooms
-});
-
-$("#editRoomAuto").autocomplete({
-	source: rooms
-})
-				
-
-
 
 
 
@@ -1020,13 +960,6 @@ $("#editRoomAuto").autocomplete({
 //-----------------------------------------------------------------------------------------------------------------------------------------		
 //-------------------------------------------//The end of jQuery Document Ready scope ----------------------------------------------------------------------------------------------		
 // ----------------------------------------------------------------------------------------------------------------------------------------	
-//keyup listener to handle days auto upper
-$('#days, #editdays, #cNum, #editcNum').keyup(function() {
-    this.value = this.value.toUpperCase();	
-});
-
-
-
 }); 		  
 
 
@@ -1076,7 +1009,6 @@ opacity: 1;
 
 
 
-
 </style>
 
 </head>
@@ -1086,13 +1018,13 @@ opacity: 1;
 
 <h1 style="margin:0px auto 0 auto; text-align:center;">CIS Department Scheduler</h1>
 
-<div id="buttonSection" >	<button class="contentcontainer" style="border-radius: 10px; color: blue; background-color: white; height: 3em; width: 125px;" onclick="$('#addCourse').dialog('open');">Add Course</button>
-	<button class="contentcontainer" style="border-radius: 10px; color: blue; background-color: white; height: 3em; width: 125px;margin-right: 200px;" onclick="refresh()">Refresh</button>Spreadsheets:</div>
+<div id="buttonSection" ></div>
 
-<div class="contentcontainer" style="visibility: hidden">
+<div id="contentcontainer" style="visibility: hidden">
 
 	<div style="margin:10px auto 100px auto; text-align:center;">
-
+	<button onclick="$('#addCourse').dialog('open');">Add Course</button>
+	<button onclick="refresh()">Refresh</button>
 	</div>
 
 
@@ -1112,46 +1044,45 @@ opacity: 1;
 	  		<div style="margin-left: auto; margin-right:auto; width: 66%;">
 	  		<div style="float: right;">
 			<label for="beginTime">Begin Time:</label>
-			<input align="right" class="timepicker" type="text" id="beginTime" pattern="\d?\d:\d\d\s(AM|PM)" required>
+			<input align="right" class="timepicker" type="text" id="beginTime" pattern="\d?\d:\d\d\s(AM|PM)">
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
 			<label for="endTime">End Time:</label>
-			<input class="timepickerend" type="text" id="endTime" pattern="\d?\d:\d\d\s(AM|PM)" required>
+			<input class="timepicker" type="text" id="endTime" pattern="\d?\d:\d\d\s(AM|PM)">
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
 			<label for="day">Days:</label>
-			<input type="text" id="days" pattern="((M)|(T)|(W)|(R)|(F))+" placeholder="MTWRF" required>
+			<input type="text" id="days" pattern="((M)|(T)|(W)|(R)|(F))+">
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
 			<label for="cNum">Course Number:</label>
-			<input type="text" id="cNum" pattern="[A-Z][A-Z][A-Z]\s\d\d\d" placeholder="CIS 173" required>
+			<input type="text" id="cNum">
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
 			<label for="sNum">Section Number:</label>
-			<input type="text" id="sNum" pattern="\d\d" placeholder="01" required>
+			<input type="text" id="sNum">
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
 			<div class="ui-widget">
 			<label for="prof">Professor:</label>
-			<input type="text" id="prof" required>
+			<input type="text" id="prof">
 			</div>
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
 			<label for="roomNum">Room Number:</label>
-			<!--<select name="addroom" id="roomNum"></select>-->
-			<input type="text" id="addroomnumauto" pattern="[A-Z]{2,3}\s[A-Z|1-9]{3,6}">
+			<select name="addroom" id="roomNum"></select>
 			</div>
 			</div>
 		
@@ -1176,46 +1107,45 @@ opacity: 1;
 	  <div style="float: right;">
 
 			<label for="editbeginTime">Begin Time</label>
-			<input class="timepicker" type="text" id="editbeginTime" pattern="\d?\d:\d\d\s(AM|PM)" required>
+			<input class="timepicker" type="text" id="editbeginTime" pattern="\d?\d:\d\d\s(AM|PM)">
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
 			<label for="editendTime">End Time:</label>
-			<input class="timepickerend" type="text" id="editendTime" pattern="\d?\d:\d\d\s(AM|PM)" required>
+			<input class="timepicker" type="text" id="editendTime" pattern="\d?\d:\d\d\s(AM|PM)">
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
 			<label for="editdays">Days:</label>
-			<input type="text" id="editdays" pattern="((M)|(T)|(W)|(R)|(F))+" required>
+			<input type="text" id="editdays" pattern="((M)|(T)|(W)|(R)|(F))+">
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
 			<label for="editcNum">Course Number:</label>
-			<input type="text" id="editcNum" pattern="[A-Z][A-Z][A-Z]\s\d\d\d">
+			<input type="text" id="editcNum">
 			</div>
 			</br>
 			</br>	
 			<div style="float: right;">
 			<label for="editsNum">Section Number:</label>
-			<input type="text" id="editsNum" pattern="\d\d" required>
+			<input type="text" id="editsNum">
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
 			<div class="ui-widget">
 			<label for="editprof">Professor:</label>
-			<input type="text" id="editprof" required>
+			<input type="text" id="editprof">
 			</div>
 			</div>
 			</br>
 			</br>
 			<div style="float: right;">
 			<label for="editrNum">Room Number:</label>
-			<!--<select name="editRoom" id="editrNum"></select>-->
-			<input type="text" id="editRoomAuto" pattern="[A-Z]{2,3}\s[A-Z|1-9]{3,6}">
+			<select name="editRoom" id="editrNum"></select>
 			</div>
 			</div>
 	</form>

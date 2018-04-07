@@ -39,10 +39,10 @@ $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
 // $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('F18.xlsx');
 $spreadsheet = $reader->load($fileName);
 
-print_r($spreadsheet->getSheetNames());    //Worksheets in the xlsx files
+// print_r($spreadsheet->getSheetNames());    //Worksheets in the xlsx files
 
 
-echo json_encode($reader->listWorksheetNames($fileName));
+// echo json_encode($reader->listWorksheetNames($fileName));
 
 
 
@@ -56,10 +56,21 @@ $row = $worksheet->getRowIterator(1)->current();
 
 
 $cellIterator = $row->getCellIterator();
+$cellIterator->setIterateOnlyExistingCells(true);
 
 
+$columns = array();
+foreach ($cellIterator as $cell) {
+    $columns[] =  $cell->getValue();
+}
 
+print_r($columns);
 
+$format = array("Subject","CourseNum","Section","Credits","Schedule_Type","Instructional_Method","CAP","SWS","Pmt","Linked_Crs","Cross-Listed","Part_of_Term","Notes to Registrar","Order","Days","Begin_Time","End_Time","Location","StartDate","EndDate","PrimaryInstructor","Inst_workload","Inst_%_Responsibility","Instructor_2","Inst_2_workload","Inst_2_%_Resp","Instructor_3","Inst_3_workload","Inst_3_%_Resp","CRN","TERM","TERM_DESC","COLL_CODE","DEPT","Long_title","Subtitle","Expr1036","START_DATE","END_DATE","Section_Text","Prerequisite","CAMPUS","ProvostMessage","RegistrarMessage",null,null,null,null,null,null,null,null,"FACULTY");
+echo "\r\n";
+print_r($format);
+
+var_dump($columns==$format);
 // $dataArray = $worksheet->toArray();
 
 // var_dump($dataArray);
@@ -68,16 +79,15 @@ $highestRow = $worksheet->getHighestRow(); // e.g. 10
 $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
 $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn); // e.g. 5
 
-$dataArray = $spreadsheet->getActiveSheet()
-    ->toArray(
-        'A1:'.$highestColumn.'1',     // The worksheet range that we want to retrieve
-        NULL,        // Value that should be returned for empty cells
-        TRUE,        // Should formulas be calculated (the equivalent of getCalculatedValue() for each cell)
-        TRUE,        // Should values be formatted (the equivalent of getFormattedValue() for each cell)
-        TRUE         // Should the array be indexed by cell row and cell column
-    );
 
-var_dump($dataArray);
+
+print $highestColumn;
+
+
+
+
+
+// print $highestColumnIndex;
 
 // $worksheet -> removeRow(4);     //Seriously delete row using old library
 
@@ -108,35 +118,55 @@ var_dump($dataArray);
 
 
 $rows = [];
-$skipfirst = true;
+  $skipfirst = true;
 foreach ($worksheet->getRowIterator() AS $row) {
-    if($skipfirst){$skipfirst=false; continue;}   
+   if($skipfirst){$skipfirst=false; continue;}  
+  
     $cellIterator = $row->getCellIterator();
-    try {
+	try {
         $cellIterator->setIterateOnlyExistingCells(true);
     } catch (Exception $e) {
         break;
     }
+   
+    // var_dump($cellIterator->getIterateOnlyExistingCells( ));
+ 
+    // $cellIterator->setIterateOnlyExistingCells(TRUE);
+    
     //$cellIterator->setIterateOnlyExistingCells(TRUE); // This loops through all cells,
     $cells = [];
     foreach ($cellIterator as $cell) {
         $cells[] = $cell->getValue();
-        if($cell->getCoordinate()[0] == 'S' or $cell->getCoordinate()[0] == 'T' ){
 
-            $worksheet->getStyle($cell->getCoordinate())->getNumberFormat()->setFormatCode('m/dd/yyyy');
-           // echo $cell->getValue();
+        if($cell->getCoordinate()[0] == 'S' or $cell->getCoordinate()[0] == 'T' ){
+            $worksheet->getStyle($cell->getCoordinate())->getNumberFormat()->setFormatCode('m/dd/yyyy');    //Convert back to Excel standard of date
         }
+        // if($cell->getCoordinate()[0] == 'S' or $cell->getCoordinate()[0] == 'T' ){
+
+        //     $worksheet->getStyle($cell->getCoordinate())->getNumberFormat()->setFormatCode('m/dd/yyyy');
+        //    // echo $cell->getValue();
+        // }
         
     }
+    // print(json_encode($cells[0]));
         
-
+    if(!is_null($cells[0])){
     $cells[15]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[15]))->format("H:i:s");
     $cells[16]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[16]))->format("H:i:s");
     $cells[18]=((\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[18]))->format("n/j/Y"));
     $cells[19]=(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cells[19]))->format("D M d Y h:i:s");
     $rows[$row->getRowIndex()] = $cells;
+    }
+    
+    // $filtered = array_filter($cells, function($var){return !is_null($var);} );
+
+    //  break;
+
 
 }
+
+// var_dump($row);
+
 
 // $skipfirst = true;
 // foreach ($rows as $row){
@@ -174,7 +204,7 @@ $jsonREST = json_encode($rows);
 
 //  print \PhpOffice\PhpSpreadsheet\Shared\TimeZone::getTimeZone();
 
- $baseDate = \PhpOffice\PhpSpreadsheet\Shared\Date::getExcelCalendar();
+//  $baseDate = \PhpOffice\PhpSpreadsheet\Shared\Date::getExcelCalendar();
 
 //  print $baseDate;
 
@@ -275,10 +305,16 @@ $.each(jsonin, (key, array)=>{
        // console.log(array[17].split(" ")[1]);
      // if(array[17] != )
  });
-    
+
+
+   var startdate;
+						for (var key in jsonin) {
+						 startdate = new Date(Date.parse(jsonin[key][18]));  //set the start date from excel through PHPSpreadsheet
+						 break;
+						} 
 
 		//console.log(events);
-console.log(new Date(Date.parse(jsonin[2][18])));
+console.log(startdate);
 //console.log( $.cal.date());
 
 // console.log( $.cal.date().addDays(2-$.cal.date().format('N')));
