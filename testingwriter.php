@@ -244,8 +244,8 @@ $exceltime = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($nutime
 // // $worksheet->getCell('A1')->setValue('John');
 // // $worksheet->getCell('A2')->setValue('Smith');
 
-// $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
-// $writer->save('test.xlsx');
+$writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+$writer->save('test.xlsx');
 
 // chmod("test.xlsx",0766);
 

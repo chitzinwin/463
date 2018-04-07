@@ -136,7 +136,7 @@ $spreadsheet = $reader->load($_SESSION['fileSource']);
 									}
 									else{
 										if ($foundEmpty){
-										$_SESSION['last_row']=$row->getRowIndex();
+										$_SESSION['blank_row']=$row->getRowIndex();
 											$foundEmpty=false;
 										}
 									}
@@ -154,29 +154,29 @@ $spreadsheet = $reader->load($_SESSION['fileSource']);
 
 function Add($courseNum, $section, $instrctor, $location, $days, $begintime, $endtime){   //$subj, $courseNum, $section, $instrctor, $location, $begintime, $endtime
 	// global $worksheet, $spreadsheet;
-	// global $last_row;
+	// global $blank_row;
 	// require_once '/vendor/phpoffice/phpspreadsheet/src/Boostrap.php';
 
 	\PhpOffice\PhpSpreadsheet\Cell\Cell::setValueBinder( new \PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder() );
 
 	$worksheet = unserialize($_SESSION['worksheet']);
-	$last_row = $_SESSION['last_row'];
+	$blank_row = $_SESSION['blank_row'];
 	// echo $worksheet->getCell('A2')->getValue();
-	$worksheet->insertNewRowBefore($last_row, 1);
+	$worksheet->insertNewRowBefore($blank_row, 1);
 //    $begin_excelstandard = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($begintime)+3600);
 //    $end_excelstandard = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($endtime)+3600);
 
-	$worksheet->getCell('A'.$last_row)->setValue(substr($courseNum,0,3));
-	 $worksheet->getCell('B'.$last_row)->setValue(substr($courseNum,3));
-	 $worksheet->getCell('C'.$last_row)->setValue($section);
-	 $worksheet->getCell('U'.$last_row)->setValue($instrctor);
-	 $worksheet->getCell('R'.$last_row)->setValue($location);
-	 $worksheet->getCell('O'.$last_row)->setValue($days);
-	 $worksheet->getCell('P'.$last_row)->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($begintime)+7200)); 
-	 $worksheet->getStyle('P'.$last_row)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_TIME1);
-	//  $worksheet->getCell('P'.$last_row)->setValue($begintime);
-	 $worksheet->getCell('Q'.$last_row)->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($endtime)+7200));
-	 $worksheet->getStyle('Q'.$last_row)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_TIME1);
+	$worksheet->getCell('A'.$blank_row)->setValue(substr($courseNum,0,3));
+	 $worksheet->getCell('B'.$blank_row)->setValue(substr($courseNum,3));
+	 $worksheet->getCell('C'.$blank_row)->setValue($section);
+	 $worksheet->getCell('U'.$blank_row)->setValue($instrctor);
+	 $worksheet->getCell('R'.$blank_row)->setValue($location);
+	 $worksheet->getCell('O'.$blank_row)->setValue($days);
+	 $worksheet->getCell('P'.$blank_row)->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($begintime)+7200)); 
+	 $worksheet->getStyle('P'.$blank_row)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_TIME1);
+	//  $worksheet->getCell('P'.$blank_row)->setValue($begintime);
+	 $worksheet->getCell('Q'.$blank_row)->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPTOExcel(strtotime($endtime)+7200));
+	 $worksheet->getStyle('Q'.$blank_row)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_TIME1);
 
   updateFile($worksheet);
 }
@@ -283,8 +283,11 @@ console.log(jsonin);
 						var events =[];
 						var startdate;
 						for (var key in jsonin) {
+							var pasretime = Date.parse(jsonin[key][18]);
 						 startdate = new Date(Date.parse(jsonin[key][18]));  //set the start date from excel through PHPSpreadsheet
+						 if(pasretime > 18000000){
 						 break;
+						 }
 						}
 						//  console.log(startdate);
 						// console.log($.cal.date(0).addDays(0).format('Y-m-d'));
@@ -896,7 +899,7 @@ $('.timepickerend').timepicker({
 	*****************************************************************************************************/
 	//NOTE this is the array that the button names come from 
 	var sheets = <?php echo $_SESSION['worksheets']; ?>;
-	$('#buttonSection').append('<input type="button" onclick="location.href=\'init.php\';" value=<?php echo basename($_SESSION["fileSource"], ".xlsx")?> (current) />');
+	$('#buttonSection').append('File Picker: <input type="button" onclick="location.href=\'init.php\';" value=<?php echo basename($_SESSION["fileSource"], ".xlsx")?> (current) /> SpreadSheets: ');
 	sheets.forEach((sheet)=>{$('#buttonSection').append('<button type="button" class="sheetName" id='+sheet+'>'+sheet+'</button>');});
 
 
@@ -1087,7 +1090,7 @@ opacity: 1;
 <h1 style="margin:0px auto 0 auto; text-align:center;">CIS Department Scheduler</h1>
 
 <div id="buttonSection" >	<button class="contentcontainer" style="border-radius: 10px; color: blue; background-color: white; height: 3em; width: 125px;" onclick="$('#addCourse').dialog('open');">Add Course</button>
-	<button class="contentcontainer" style="border-radius: 10px; color: blue; background-color: white; height: 3em; width: 125px;margin-right: 200px;" onclick="refresh()">Refresh</button>Spreadsheets:</div>
+	<button class="contentcontainer" style="border-radius: 10px; color: blue; background-color: white; height: 3em; width: 125px;margin-right: 200px;" onclick="refresh()">Refresh</button></div>
 
 <div class="contentcontainer" style="visibility: hidden">
 

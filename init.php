@@ -1,6 +1,7 @@
 <?
 ini_set('session.gc_maxlifetime', 3600);
 session_set_cookie_params(3600);
+ini_set('memory_limit', '512M');
 session_start();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // $entityBody = file_get_contents('php://input');
