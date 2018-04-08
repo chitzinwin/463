@@ -1,8 +1,9 @@
 <?
 ini_set('session.gc_maxlifetime', 3600);
 session_set_cookie_params(3600);
-ini_set('memory_limit', '512M');
+
 session_start();
+ini_set('memory_limit', '512M');
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // $entityBody = file_get_contents('php://input');
     // echo $entityBody;
@@ -21,6 +22,8 @@ $files = glob('spreadsheets/*.xlsx');
 //  print(json_encode($files));
 $json = new stdClass();
  foreach($files as $file){
+    // chown($file, 'daemon');
+    // chmod($file,0766);
    $name = basename($file, '.xlsx');
     $json->$name =$file;
  }
@@ -54,7 +57,7 @@ var buttons = new Object();
                             success: function(data) {
                                 console.log(data);
                             if(data){
-                            location.replace("resourcemergeddays.php");      //only file selection is successful switch to next page
+                            location.replace("index.php");      //only file selection is successful switch to next page
                              }
                                  }                     
                             
