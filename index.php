@@ -1059,6 +1059,7 @@ function refresh(){
 html,body{
 font-family: 'Roboto';
 font-size: 10px;
+overflow: hidden;
 }
 #calendar{
 position: absolute;
