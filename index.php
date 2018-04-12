@@ -2,9 +2,10 @@
 require "vendor/autoload.php";
 use \PhpOffice\PhpSpreadsheet\Spreadsheet;
 use \PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Symfony\Component\Cache\Simple\FilesystemCache;
+// use Symfony\Component\Cache\Simple\FilesystemCache;
 
-// $cache = new FilesystemCache();
+// $cache = new Symfony\Component\Cache\Simple\FilesystemCache();
+
 
 
 $cacheMethod = \PHPExcel_CachedObjectStorageFactory::cache_in_memory_gzip;                //compress memory usage
@@ -92,8 +93,7 @@ $spreadsheet = $reader->load($_SESSION['fileSource']);
 				$cellIterator = $firstrow->getCellIterator();
 				try {
 					$cellIterator->setIterateOnlyExistingCells(true);
-				} catch (Exception $e) {
-					}	
+				} catch (Exception $e) { exit;}	
 				$columns = array();  //to check with format
 				foreach ($cellIterator as $cell) {
 					$columns[] =  $cell->getValue();
@@ -233,7 +233,7 @@ function updateFile($worksheet){
 		unset($worksheet);
 
 
-	chmod($_SESSION['fileSource'],0766);
+	echo chmod($_SESSION['fileSource'],0766);
 
 	// var_dump(\PhpOffice\PhpSpreadsheet\Shared\Date::getDefaultTimezone());
 	
@@ -242,7 +242,7 @@ function updateFile($worksheet){
 	 exit;
 }
 
-////////////////////////////////////////PHP END HERE///////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////PHP END HERE///////////////////////////////////////////////////////////////////////////////////////////////////
 ?>         
 
 <!doctype html>
@@ -270,6 +270,7 @@ function updateFile($worksheet){
 		$('.contentcontainer').hide();
 	// This prevents Flash of Unstyled Content by hiding all HTML before everyting can load.  Show is called in function() below.
 </script>
+<script src="schedulejs/loading/js/jquery.loadingModal.js"></script>
 
 
 <script type="text/javascript">
@@ -358,11 +359,9 @@ console.log(jsonin);
 													})()
 											};
 
-						// classInsession.includes(day+array[17]+array[15]) ?  '#CD0000' : ( profInclass.includes(day+array[20]+array[15]) ? 'orange' :'#255BA1')
-											classInsession[day+array[17]+array[15]] = events.length - 1;   
+											classInsession[day+array[17]+array[15]] = events.length - 1;  //dayRoomStartTime 
 											profInclass[day+array[20]+array[15]] = events.length - 1;//dayprofstarttime
-											// classInsession.push(day+array[17]+array[15]);     //dayRoomStartTime
-											// profInclass.push(day+array[20]+array[15]);
+											
 
 										}
 
@@ -410,8 +409,7 @@ console.log(jsonin);
 			/////preparation ended here
 
 
-	localStorage.setItem("red", false);
-	localStorage.setItem('orange', false);	
+	var red=[], orange=[], blue=[];
 	var trackprof = {};	var prof = false; var selected = false;
 
 		
@@ -454,73 +452,27 @@ console.log(jsonin);
 									// $("label.coursesec, label.prof").on('click',
 								
 								selected = true;
-								// function clickonclassnprof(){
-											 
-																		
-								// 			 var red = $(this).parent().css('background-color') === 'rgb(249, 6, 6)' ? true : false;
-								// 			 var orange = ($(this).parent().css('background-color') === 'rgb(250, 182, 56)') ? true : false;
-	 
-								// 			 var whichclass = $(this).attr('class');
-								// 			  prof = (whichclass == 'prof') ? true : false;
-	 
-								// 			 // console.log(Object.keys(trackprof).length);
-								// 			 if(Object.keys(trackprof).length >0){  //to retore the color in the next click after name click
-	 
-								// 				 document.querySelectorAll('[data-id]').forEach((mainblock)=>{
-								// 						 if($(mainblock).attr('data-id') in trackprof){
-								// 					 $(mainblock).attr('style',(trackprof[$(mainblock).attr('data-id')]).title);
-								// 					 $(mainblock).children('.details').attr('style',(trackprof[$(mainblock).attr('data-id')]).note);
-								// 					 // console.log($(mainblock).attr('style'));
-								// 						 }
-	 
-								// 				 });
-												 
-								// 				 }
-												 
-								// 			 document.querySelectorAll("label."+whichclass).forEach((session)=>{
-								// 				 if($(this).html()===$(session).html()){		
-								// 				 // console.log($(session).html());
-												 
-								// 			 if(prof){trackprof[$(session).parent().parent().attr('data-id')]={'title' : $(session).parent().parent().attr('style'), 'note': $(session).parent().attr('style')} ;}
-								// 			  var title = prof ? 'limegreen' : 'gold';
-								// 			  var note = prof ? 'lime' : 'yellow';
-								// 				 $(session).parent().css({'background-color': note, 'color':'black'});
-								// 				 $(session).parent().parent().css({'background-color': title, 'color':'black'});
-								// 				 }
-								// 				 else{
-								// 					 if($(session).parent().css('background-color') === 'rgb(255, 255, 0)'){  // current yellow
-																 
-								// 						 var titlecolor = (localStorage.getItem('red') == 'true') ? 'rgb(194, 10, 10)' : ((localStorage.getItem('orange') == 'true') ? 'rgb(242, 162, 13)' : 'rgb(37, 91, 162)');
-								// 						 var notecolor = (localStorage.getItem('red') == 'true')  ? 'rgb(249, 6, 6)' :  ((localStorage.getItem('orange') == 'true') ? 'rgb(250, 182, 56)' :  'rgb(40, 114, 210)');
-								// 						 // console.log('middle  '+Boolean(localStorage.getItem('red')));  
-								// 						 $(session).parent().css({'background-color': notecolor, 'color':'white'});
-								// 						 $(session).parent().parent().css({'background-color': titlecolor, 'color':'white'});
-	 
-								// 					 }
-	 
-																								 
-								// 				 }
-												 
-	 
-								// 				 });  //for each loop end here
-	 
-													 
-								// 				 localStorage.setItem("red", red);
-								// 				 localStorage.setItem("orange", orange);
-								// 				 if(!prof){
-								// 						 trackprof={};
-								// 				 }
-											 
-	 
-								// 					 // console.log(localStorage.getItem("red"));
-								// 					 console.log(trackprof);
-											 
-								// 		 //   console.log($(this).parent().attr('style'));
-								// 		 // console.log($(this).parent().css('background-color'));
-								// 		 //  console.log($(this).html());
-
-								// 		 };
-								// 		 $("label.coursesec, label.prof").on('click' ,clickonclassnprof);
+								if(red.length>0){
+																red.forEach(function(obj){
+																	$(obj).css('background-color', '#CD0000');          //'rgb(249, 6, 6)'
+																	$(obj).parent().css('background-color','rgb(194, 10, 10)'); 
+																});
+															
+														}
+								 if(orange.length>0){
+															orange.forEach(function(item){
+																	$(item).css('background-color', 'orange');          //'rgb(249, 6, 6)'
+																	$(item).parent().css('background-color', 'rgb(242, 162, 13)'); 
+																});
+																
+														}
+								 if(blue.length>0){
+															blue.forEach(function(item){
+																	$(item).css({'background-color': 'rgb(40, 114, 210)', 'color':'white'});          //'rgb(249, 6, 6)'
+																	$(item).parent().css({'background-color': 'rgb(37, 91, 162)', 'color':'white'}); 
+																});
+																
+														}
 
 		},
 		
@@ -554,8 +506,7 @@ console.log(jsonin);
 
 										}
 										else{
-											var red = $(this).parent().css('background-color') === 'rgb(249, 6, 6)' ? true : false;
-											 var orange = ($(this).parent().css('background-color') === 'rgb(250, 182, 56)') ? true : false;
+											//  var orange = ($(this).parent().css('background-color') === 'rgb(250, 182, 56)') ? true : false;
 	 
 											 var whichclass = $(this).attr('class');
 											  prof = (whichclass == 'prof') ? true : false;
@@ -573,37 +524,51 @@ console.log(jsonin);
 												 });
 												 
 												 }
+										if(prof){
+											if(red.length>0){
+																red.forEach(function(obj){
+																	$(obj).css('background-color', '#CD0000');          //'rgb(249, 6, 6)'
+																	$(obj).parent().css('background-color','rgb(194, 10, 10)'); 
+																});
+																
+														}
+										 if(orange.length>0){
+															orange.forEach(function(item){
+																	$(item).css('background-color', 'orange');          //'rgb(249, 6, 6)'
+																	$(item).parent().css('background-color', 'rgb(242, 162, 13)'); 
+																});
+																
+														}
+										  if(blue.length>0){
+															blue.forEach(function(item){
+																	$(item).css({'background-color': 'rgb(40, 114, 210)', 'color':'white'});          //'rgb(249, 6, 6)'
+																	$(item).parent().css({'background-color': 'rgb(37, 91, 162)', 'color':'white'}); 
+																});
+																
+														}
+
+												}
+
 												 
-											 document.querySelectorAll("label."+whichclass).forEach((session)=>{
-												 if($(this).html()===$(session).html()){		
+												 
+									document.querySelectorAll("label."+whichclass).forEach((session)=>{
+									if($(this).html()===$(session).html()){		
 												 // console.log($(session).html());
-												 
-											 if(prof){trackprof[$(session).parent().parent().attr('data-id')]={'title' : $(session).parent().parent().attr('style'), 'note': $(session).parent().attr('style')} ;}
+									if($(session).parent().css('background-color') === 'rgb(249, 6, 6)') red.push($(session).parent());
+									if($(session).parent().css('background-color') === 'rgb(250, 182, 56)') orange.push($(session).parent());
+									if($(session).parent().css('background-color') === 'rgb(40, 114, 210)') blue.push($(session).parent());
+
+									 if(prof){trackprof[$(session).parent().parent().attr('data-id')]={'title' : $(session).parent().parent().attr('style'), 'note': $(session).parent().attr('style')} ;}
+
 											  var title = prof ? 'limegreen' : 'gold';
 											  var note = prof ? 'lime' : 'yellow';
 												 $(session).parent().css({'background-color': note, 'color':'black'});
 												 $(session).parent().parent().css({'background-color': title, 'color':'black'});
 												 }
-												 else{
-													 if($(session).parent().css('background-color') === 'rgb(255, 255, 0)'){  // current yellow
-																 
-														 var titlecolor = (localStorage.getItem('red') == 'true') ? 'rgb(194, 10, 10)' : ((localStorage.getItem('orange') == 'true') ? 'rgb(242, 162, 13)' : 'rgb(37, 91, 162)');
-														 var notecolor = (localStorage.getItem('red') == 'true')  ? 'rgb(249, 6, 6)' :  ((localStorage.getItem('orange') == 'true') ? 'rgb(250, 182, 56)' :  'rgb(40, 114, 210)');
-														 // console.log('middle  '+Boolean(localStorage.getItem('red')));  
-														 $(session).parent().css({'background-color': notecolor, 'color':'white'});
-														 $(session).parent().parent().css({'background-color': titlecolor, 'color':'white'});
+											
+										});  //for each loop end here
 	 
-													 }
-	 
-																								 
-												 }
-												 
-	 
-												 });  //for each loop end here
-	 
-													 
-												 localStorage.setItem("red", red);
-												 localStorage.setItem("orange", orange);
+											
 												 if(!prof){
 														 trackprof={};
 												 }	
@@ -611,20 +576,6 @@ console.log(jsonin);
 
 									});
 		
-				// $("label.coursesec, label.prof").unbind('click');
-
-
-		// 	   uid		: 1,
-		// 		begins	:  $.cal.date(startdate).addDays(0).format('Y-m-d')+' 10:10:00',
-		// 		ends	: $.cal.date(startdate).addDays(0).format('Y-m-d')+' 12:00:00',
-		// 		color	: '#dddddd',
-		// 		resource: '113',
-		// 		title	: 'Done'
-		// }));
-
-
-		// $.cal.
-
 		toalternate=true;
 		document.querySelectorAll("div.ui-cal-label-date").forEach((dayCol)=>{
 			// console.log($(el).html().substring(0,3));
@@ -793,7 +744,9 @@ $('.timepickerend').timepicker({
 					}
 					//console.log(room);
 					// alert("done");
-			
+					modaltext = 'Adding course to \"'+selection+'\" spreadsheet';
+					modalbkcolor = '#255BA1';
+					spinner = spinners[1];
 				$.ajax({
 						type: "POST",
 						data: {
@@ -825,7 +778,9 @@ $('.timepickerend').timepicker({
             	"Confirm Edit" : function() {
 					//var ddl = document.getElementById("editrNum");
 					//var room = ddl.options[ddl.selectedIndex].text;
-			
+			modaltext = "Updating changes to "+selection;
+			modalbkcolor = '#255BA1';
+			spinner = spinners[2];
 			$.ajax({type: "POST",
 						data: {
 						Action: "UPDATE",
@@ -839,10 +794,13 @@ $('.timepickerend').timepicker({
 						Days: $("#editdays").val()
 						}, 
 						success: function(data){
-							refresh();							
+							if(data){
+							refresh();
+							}							
 					},
 			});
-            },
+
+			},
 				
             	"Cancel" : function() {
                 $(this).dialog("close");
@@ -855,13 +813,18 @@ $('.timepickerend').timepicker({
 			$("#deleteDialog").dialog('option', 'buttons', {
             	"Yes" : function() {
 					// Confirm yes, will not close modal window until server says action is completed.
+					modaltext = 'Deleting course from '+selection ;
+					modalbkcolor = '#800000';
+					spinner = spinners[9];
 					$.ajax({type: "POST",
 						data: {
 						Action: "DELETE",
 						LineNum: $("#deleteLine").val()
 					}, 
 					success: function(data){
+						if(data){
 						refresh();
+						}
 					},
 					error: function(data){
 						alert("Action could not be completed.");
@@ -908,12 +871,24 @@ $('.timepickerend').timepicker({
 	*****************************************************************************************************/
 	//NOTE this is the array that the button names come from 
 	var sheets = <?php echo $_SESSION['worksheets']; ?>;
-	$('#buttonSection').append('File Picker: <input type="button" onclick="location.href=\'init.php\';" value=<?php echo basename($_SESSION["fileSource"], ".xlsx")?> (current) /> SpreadSheets: ');
-	sheets.forEach((sheet)=>{$('#buttonSection').append('<button type="button" class="sheetName" id='+sheet+'>'+sheet+'</button>');});
+	var selection = "<?php if(isset($_SESSION['worksheetName'])){echo $_SESSION['worksheetName'];}else{echo "none";} ?>";
 
+	$('#buttonSection').append('File Picker: <input type="button" onclick="location.href=\'init.php\';" value=<?php echo basename($_SESSION["fileSource"], ".xlsx")?> (current) /> SpreadSheets: ');
+	sheets.forEach((sheet)=>{
+		if(selection == sheet){
+		$('#buttonSection').append('<button type="button" class="sheetName" disabled>'+sheet+'</button>');
+		}
+		else{
+			$('#buttonSection').append('<button type="button" class="sheetName">'+sheet+'</button>');
+
+		}
+		});
 
 	$('button.sheetName').on('click', function(){
 			var name = ($(this).html());
+			modaltext = "Loading spreadsheet : "+name;
+			modalbkcolor = '#006600';
+			spinner = spinners[7];
 	$.ajax({type: "POST",
 						data: {
 					Action: "SETSHEET",
@@ -926,6 +901,7 @@ $('.timepickerend').timepicker({
 	
 	});
 
+	
 
 
 	// for(var i = 0; i < sheets.length; i++){
@@ -1008,13 +984,13 @@ $('.timepickerend').timepicker({
 				)
 
 
-$("#addroomnumauto").autocomplete({
-	source: rooms
-});
+		$("#addroomnumauto").autocomplete({
+			source: rooms
+		});
 
-$("#editRoomAuto").autocomplete({
-	source: rooms
-})
+		$("#editRoomAuto").autocomplete({
+			source: rooms
+		});
 				
 
 
@@ -1023,8 +999,30 @@ $("#editRoomAuto").autocomplete({
 
 
 
-// This prevents FOUC 
-//$('html').show();
+			$('#days, #editdays, #cNum, #editcNum').keyup(function() {
+				this.value = this.value.toUpperCase();	
+			});
+
+			var spinners = ['rotatingPlane','wave', 'wanderingCubes','spinner','chasingDots','threeBounce','circle', 'cubeGrid','fadingCircle','foldingCube'];
+			var modaltext, modalbkcolor, spinner;
+			$(document).ajaxStart(function(){
+				$( document ).blur();
+				//spinIndex = (spinIndex < spinners.length) ? (spinIndex++) : (spinIndex=0);
+				$('body').loadingModal({
+						position: 'auto',
+						text: modaltext,
+						color: '#fff',
+						opacity: '0.99',
+						backgroundColor: modalbkcolor,
+						animation: spinner
+						});
+						
+				
+			});
+
+
+
+
 //-----------------------------------------------------------------------------------------------------------------------------------------		
 //-----------------------------------------------------------------------------------------------------------------------------------------		
 //-----------------------------------------------------------------------------------------------------------------------------------------		
@@ -1032,14 +1030,8 @@ $("#editRoomAuto").autocomplete({
 //-----------------------------------------------------------------------------------------------------------------------------------------		
 //-------------------------------------------//The end of jQuery Document Ready scope ----------------------------------------------------------------------------------------------		
 // ----------------------------------------------------------------------------------------------------------------------------------------	
-//keyup listener to handle days auto upper
-$('#days, #editdays, #cNum, #editcNum').keyup(function() {
-    this.value = this.value.toUpperCase();	
-});
 
-
-
-}); 		  
+   }); 		  
 
 
 
@@ -1054,11 +1046,14 @@ function refresh(){
 
 
 //the root script scope in html</script>   
+<link rel="stylesheet" href="schedulejs/loading/css/jquery.loadingModal.css">
 
 <style type="text/css">
 html,body{
 font-family: 'Roboto';
 font-size: 10px;
+overflow: hidden;
+
 }
 #calendar{
 position: absolute;
