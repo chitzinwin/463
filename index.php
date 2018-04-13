@@ -747,6 +747,8 @@ $('.timepickerend').timepicker({
 					modaltext = 'Adding course to \"'+selection+'\" spreadsheet';
 					modalbkcolor = '#255BA1';
 					spinner = spinners[1];
+					var coursenumtrimmed = $('#cNum').val().replace(/\s/g,'');
+
 				$.ajax({
 						type: "POST",
 						data: {
@@ -778,14 +780,20 @@ $('.timepickerend').timepicker({
             	"Confirm Edit" : function() {
 					//var ddl = document.getElementById("editrNum");
 					//var room = ddl.options[ddl.selectedIndex].text;
-			modaltext = "Updating changes to "+selection;
-			modalbkcolor = '#255BA1';
-			spinner = spinners[2];
+					if ($('#editbeginTime').val() == $('#editendTime').val()){
+						alert("Begin time cannot be the same as end time.")
+						return false;
+					}
+					modaltext = "Updating changes to "+selection;
+					modalbkcolor = '#255BA1';
+					spinner = spinners[2];
+					var coursenumtrimmed = $('#editcNum').val().replace(/\s/g,'');
+					
 			$.ajax({type: "POST",
 						data: {
 						Action: "UPDATE",
 						LineNumber: $("#editLineNum").val(),
-						CourseNum: $('#editcNum').val(),
+						CourseNum: coursenumtrimmed,
 						Section: $('#editsNum').val(),
 						PrimaryInstructor: $('#editprof').val(),
 						Location: $("#editRoomAuto").val(),
@@ -1005,20 +1013,20 @@ $('.timepickerend').timepicker({
 
 			var spinners = ['rotatingPlane','wave', 'wanderingCubes','spinner','chasingDots','threeBounce','circle', 'cubeGrid','fadingCircle','foldingCube'];
 			var modaltext, modalbkcolor, spinner;
-			$(document).ajaxStart(function(){
-				$( document ).blur();
-				//spinIndex = (spinIndex < spinners.length) ? (spinIndex++) : (spinIndex=0);
-				$('body').loadingModal({
-						position: 'auto',
-						text: modaltext,
-						color: '#fff',
-						opacity: '0.99',
-						backgroundColor: modalbkcolor,
-						animation: spinner
-						});
+			// $(document).ajaxStart(function(){
+			// 	$( document ).blur();
+			// 	//spinIndex = (spinIndex < spinners.length) ? (spinIndex++) : (spinIndex=0);
+			// 	$('body').loadingModal({
+			// 			position: 'auto',
+			// 			text: modaltext,
+			// 			color: '#fff',
+			// 			opacity: '0.99',
+			// 			backgroundColor: modalbkcolor,
+			// 			animation: spinner
+			// 			});
 						
 				
-			});
+			// });
 
 
 
@@ -1143,7 +1151,7 @@ opacity: 1;
 			</br>
 			<div style="float: right;">
 			<label for="sNum">Section Number:</label>
-			<input type="text" id="sNum" pattern="\d\d" placeholder="01" required>
+			<input type="text" id="sNum" pattern="\d{1,2}" placeholder="01" required>
 			</div>
 			</br>
 			</br>
@@ -1158,7 +1166,7 @@ opacity: 1;
 			<div style="float: right;">
 			<label for="roomNum">Room Number:</label>
 			<!--<select name="addroom" id="roomNum"></select>-->
-			<input type="text" id="addroomnumauto" pattern="[A-Z]{2,3}\s[A-Z|1-9]{3,6}">
+			<input type="text" id="addroomnumauto" pattern="[A-Z]{2,3}\s[A-Z|0-9]{3,6}">
 			</div>
 			</div>
 		
@@ -1207,7 +1215,7 @@ opacity: 1;
 			</br>	
 			<div style="float: right;">
 			<label for="editsNum">Section Number:</label>
-			<input type="text" id="editsNum" pattern="\d\d" required>
+			<input type="text" id="editsNum" pattern="\d{1,2}" required>
 			</div>
 			</br>
 			</br>
@@ -1222,7 +1230,7 @@ opacity: 1;
 			<div style="float: right;">
 			<label for="editrNum">Room Number:</label>
 			<!--<select name="editRoom" id="editrNum"></select>-->
-			<input type="text" id="editRoomAuto" pattern="[A-Z]{2,3}\s[A-Z|1-9]{3,6}">
+			<input type="text" id="editRoomAuto" pattern="[A-Z]{2,3}\s[A-Z|0-9]{3,6}">
 			</div>
 			</div>
 	</form>
